@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileType, Link } from "lucide-react";
+import { Upload, FileType, Link, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [backgroundRemovalLink, setBackgroundRemovalLink] = useState<
+    number | null
+  >(null);
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -39,16 +42,41 @@ export function UploadCard() {
   };
 
   const handleBackgroundRemoval = async () => {
-    const image_url =
-      "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80";
+    if (!preview) {
+      console.error("No file selected");
+      return;
+    }
+
+    const response = await fetch(preview);
+    const blob = await response.blob();
+    const file = new File([blob], fileName || "uploaded-image.png", {
+      type: blob.type,
+    });
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const uploadRes = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!uploadRes.ok) throw new Error("Upload failed");
+    const uploadData = await uploadRes.json();
+
+    const storedImageUrl = uploadData.publicUrl; // Use returned URL
+    const localURL = `http://localhost:3000${storedImageUrl}`;
 
     const res = await fetch("/api/background-removal", {
       method: "POST",
-      body: JSON.stringify({ image_url }),
+      body: JSON.stringify({ localURL }),
     });
     const data = await res.json();
-    console.log("removing",data);
+    setBackgroundRemovalLink(data?.id);
+
+    // redirect(`/remove-background/${data?.id}`);
   };
+
   return (
     <div className="w-full max-w-lg">
       <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
@@ -77,14 +105,6 @@ export function UploadCard() {
             p-8
           `}
         >
-          {/* 
-          <input
-            type="file"
-            className="hidden"
-            id="file-upload"
-            accept="image/*"
-          /> */}
-
           {preview ? (
             <div className="max-w-72 max-h-96 rounded-2xl bg-white/10 flex items-center justify-center mb-4  transition-all duration-200">
               <img src={preview} alt="File Preview" />
