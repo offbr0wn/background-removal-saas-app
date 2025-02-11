@@ -4,67 +4,43 @@ import { HTTPException } from "hono/http-exception";
 import { writeFile } from "fs/promises";
 import path from "path";
 import fs from "fs";
-
+import { bearerAuth } from "hono/bearer-auth";
+import { getProcessedImage, postImage } from "../utils/apiHelper";
+import { authMiddleware } from "@/middleware/auth";
 export const runtime = "nodejs";
-type PostImageProps = {
-  imgSource: any;
-};
-const app = new Hono().basePath("/api");
 const apiUrl = "https://api.claid.ai/v1-beta1/image/edit/async";
-const apiToken = "485b3e54f57b495890069d570b3b3e8f";
+const token = "485b3e54f57b495890069d570b3b3e8f";
 
-async function postImage(image_url: PostImageProps) {
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiToken}`,
-    },
-    body: JSON.stringify({
-      input: image_url,
-      operations: {
-        background: {
-          remove: true,
-        },
-      },
-    }),
-  });
-  const data = await response.json();
+const app = new Hono().basePath("/api");
 
-  return data;
-}
+app.use("/api/*", authMiddleware);
 
 app.post("/background-removal", async (c) => {
   try {
     const { image_url } = await c.req.json();
-
-    if (image_url) {
-      const imagePathDownload = await postImage(image_url);
-      // const imagePath = fs.writeFileSync("no-bg.png", Buffer.from(imagePathDownload));
-      return c.json({ imagePathDownload });
-    } else {
+    if (!image_url) {
       throw new HTTPException(401, { message: "No image found" });
     }
+console.log(image_url);
+    const imagePathDownload = await postImage(image_url);
+
+    return c.json({ imagePathDownload });
   } catch (error) {
     return c.json({ error: error }, error || 500);
   }
 });
 
 app.get("/retrieve-removed-image/:id", async (c) => {
-  const { id } = c.req.param();
-  // const response = await fetch(
-  //   "http://api.claid.ai/v1-beta1/image/edit/async/image/",
-  //   {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${apiToken}`,
-  //     },
-  //   }
-  // );
-  // const data = await response.json();
-  return c.json({ id });
-});
+  try {
+    const { id } = c.req.param();
 
+    const data = await getProcessedImage(id);
+
+    return c.json({ data });
+  } catch (error) {
+    return c.json({ error: error });
+  }
+});
 
 app.post("/upload", async (c) => {
   const body = await c.req.parseBody();
@@ -96,10 +72,26 @@ app.post("/upload", async (c) => {
   // Generate Custom Storage URL
   const storagePath = `storage://${storageName}/${imageFolder}/${fileName}`;
   const publicUrl = `/${imageFolder}/${fileName}`;
+  // cleanup method
+  const cleanup = async () => {
+    if (fs.existsSync(filePath)) {
+      await fs.promises.unlink(filePath);
+    }
+  };
 
+  // call the cleanup method after the image has been uploaded and processed
+  // postImage(publicUrl)
+  //   .then(async () => {
+  //     await cleanup();
+  //   })
+  //   .catch(async (error) => {
+  //     console.error(error);
+  //     await cleanup();
+  //   });
+
+  cleanup();
   return c.json({ storagePath, publicUrl });
 });
-
 
 export const GET = handle(app);
 export const POST = handle(app);

@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, FileType, Link, Download } from "lucide-react";
+import { useCallback, useState } from "react";
+import { Upload, FileType, Link, Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import {
+  getBackgroundRemovalImage,
+  handleBackgroundRemoval,
+} from "@/api/removeBackground";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [backgroundRemovalLink, setBackgroundRemovalLink] = useState<
-    number | null
-  >(null);
+
+  const [isUrlInputVisible, setIsUrlInputVisible] = useState(false);
+  const [urlInput, setUrlInput] = useState<string>("");
+  const [assignUrlLink, setAssignUrlLink] = useState<string>("");
+  const router = useRouter();
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -41,41 +49,86 @@ export function UploadCard() {
     reader.readAsDataURL(file);
   };
 
-  const handleBackgroundRemoval = async () => {
-    if (!preview) {
-      console.error("No file selected");
-      return;
-    }
+  // const handleBackgroundRemoval = async () => {
 
-    const response = await fetch(preview);
-    const blob = await response.blob();
-    const file = new File([blob], fileName || "uploaded-image.png", {
-      type: blob.type,
+  const getBackgroundRemoval = async () => {
+    const processedImage = await handleBackgroundRemoval({
+      preview,
+      fileName,
+      assignUrlLink,
     });
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const uploadRes = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!uploadRes.ok) throw new Error("Upload failed");
-    const uploadData = await uploadRes.json();
-
-    const storedImageUrl = uploadData.publicUrl; // Use returned URL
-    const localURL = `http://localhost:3000${storedImageUrl}`;
-
-    const res = await fetch("/api/background-removal", {
-      method: "POST",
-      body: JSON.stringify({ localURL }),
-    });
-    const data = await res.json();
-    setBackgroundRemovalLink(data?.id);
-
-    // redirect(`/remove-background/${data?.id}`);
+    router.push(
+      `/remove-background/${processedImage}
+        `
+    );
   };
+  //   if (!preview) {
+  //     console.error("No file selected");
+  //     return;
+  //   }
+
+  //   // Fetch
+  //   const response = await fetch(preview);
+  //   const blob = await response.blob();
+  //   const file = new File([blob], fileName || "uploaded-image.png", {
+  //     type: blob.type,
+  //   });
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+
+  //   const uploadRes = await fetch("/api/upload", {
+  //     method: "POST",
+  //     body: formData,
+  //   });
+
+  //   if (!uploadRes.ok) throw new Error("Upload failed");
+  //   const uploadData = await uploadRes.json();
+
+  //   const storedImageUrl = uploadData.publicUrl; // Use returned URL
+  //   const image_url = `http://localhost:3000${storedImageUrl}`;
+
+  //   // Api to remove background
+  //   const res = await fetch("/api/background-removal", {
+  //     method: "POST",
+  //     body: JSON.stringify({ image_url: assignUrlLink }),
+  //   });
+  //   const data = await res.json();
+  //   if (!data.imagePathDownload?.data?.id) throw new Error("Processing failed");
+
+  //   router.push(`/remove-background/${data.imagePathDownload.data.id}`);
+  // };
+
+  const handleUrlSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      if (!urlInput) return;
+
+      try {
+        const response = await fetch(urlInput);
+        if (!response.ok) throw new Error("Failed to fetch image");
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target?.result as string;
+          // onImageUpload(dataUrl)
+
+          setPreview(dataUrl);
+          setAssignUrlLink(response?.url);
+        };
+        reader.readAsDataURL(blob);
+        setUrlInput("");
+
+        setIsUrlInputVisible(false);
+        // toast.success("Image loaded successfully")
+      } catch (error) {
+        console.error("Error loading image:", error);
+      }
+    },
+    [urlInput]
+  );
 
   return (
     <div className="w-full max-w-lg">
@@ -114,16 +167,18 @@ export function UploadCard() {
               <Upload className="h-8 w-8 text-white/70" />
             </div>
           )}
-          <Button
-            variant="secondary"
-            className="bg-white hover:bg-white/90 text-black border-0 mb-4 relative"
-            asChild
-          >
-            <label htmlFor="file-upload" className="cursor-pointer">
-              {fileName ? fileName : "Upload File"}
-            </label>
-          </Button>
-
+          {/* Logic for upload button shows button when no image is uploaded */}
+          {!(fileName || preview) && (
+            <Button
+              variant="secondary"
+              className="bg-white hover:bg-white/90 text-black border-0 mb-4 relative"
+              asChild
+            >
+              <label htmlFor="file-upload" className="cursor-pointer">
+                {fileName || preview ? fileName : "Upload File"}
+              </label>
+            </Button>
+          )}
           <input
             type="file"
             id="file-upload"
@@ -134,11 +189,11 @@ export function UploadCard() {
               if (selectedFile) handleFileChange(selectedFile);
             }}
           />
-
-          {fileName ? (
+          {/* Will show image preview once image is uploaded/pasted */}
+          {fileName || preview ? (
             <Button
               className="bg-blue-900 hover:bg-blue-700 text-white  transition-all duration-200 cursor-pointer "
-              onClick={handleBackgroundRemoval}
+              onClick={getBackgroundRemoval}
             >
               Remove Background
             </Button>
@@ -155,8 +210,45 @@ export function UploadCard() {
             </div>
           )}
         </div>
+        {/* URL inout field to paste a URL for image  */}
+        {isUrlInputVisible ? (
+          <form onSubmit={handleUrlSubmit} className="mt-4">
+            <div className="flex items-center gap-2">
+              <Input
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                className="flex-grow bg-white/10 text-white border-transparent"
+              />
+              <Button
+                type="submit"
+                className="bg-white hover:bg-white/90 text-black"
+              >
+                Load
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-white/70 hover:text-white"
+                onClick={() => setIsUrlInputVisible(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <Button
+            variant="ghost"
+            className="mt-4 text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+            onClick={() => setIsUrlInputVisible(true)}
+          >
+            <Link className="mr-2 h-4 w-4" />
+            Paste image URL
+          </Button>
+        )}
 
-        {/* Quick Actions */}
+        {/* Quick Actions  for later features down the line */}
         <div className="mt-6 grid grid-cols-2 gap-4">
           <Button
             variant="ghost"
