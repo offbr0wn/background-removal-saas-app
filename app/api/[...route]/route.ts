@@ -1,15 +1,12 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { HTTPException } from "hono/http-exception";
-import { writeFile } from "fs/promises";
-import path from "path";
-import fs from "fs";
-import { bearerAuth } from "hono/bearer-auth";
+
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+
 import { getProcessedImage, postImage } from "../utils/apiHelper";
 import { authMiddleware } from "@/middleware/auth";
 export const runtime = "nodejs";
-const apiUrl = "https://api.claid.ai/v1-beta1/image/edit/async";
-const token = "485b3e54f57b495890069d570b3b3e8f";
 
 const app = new Hono().basePath("/api");
 
@@ -21,7 +18,6 @@ app.post("/background-removal", async (c) => {
     if (!image_url) {
       throw new HTTPException(401, { message: "No image found" });
     }
-console.log(image_url);
     const imagePathDownload = await postImage(image_url);
 
     return c.json({ imagePathDownload });
@@ -42,6 +38,7 @@ app.get("/retrieve-removed-image/:id", async (c) => {
   }
 });
 
+// Upload endpoint to store the file in S3 bucket returns public URL
 app.post("/upload", async (c) => {
   const body = await c.req.parseBody();
   const file = body.file as File;
@@ -52,45 +49,55 @@ app.post("/upload", async (c) => {
 
   // Convert file to Buffer
   const bytes = await file.arrayBuffer();
-  const buffer = new Uint8Array(bytes); // ✅ Fix: Use Uint8Array instead of Buffer
+  // const buffer = new Uint8Array(bytes);
+  const buffer = Buffer.from(bytes);
 
   // Define storage details
   const storageName = "local-storage"; // Custom storage name
   const imageFolder = "uploads"; // Folder where images are stored
   const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`; // Unique filename
+  const key = `uploads/${fileName}`; // S3 key
 
-  // Ensure the upload directory exists
-  const uploadDir = path.join(process.cwd(), "public", imageFolder);
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
+  // Initialize the S3 client using your environment variables
+  const s3 = new S3Client({
+    region: process.env.AWS_REGION,
 
-  // Save file locally
-  const filePath = `${uploadDir}/${fileName}`;
-  await writeFile(filePath, buffer);
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+  });
 
-  // Generate Custom Storage URL
-  const storagePath = `storage://${storageName}/${imageFolder}/${fileName}`;
-  const publicUrl = `/${imageFolder}/${fileName}`;
-  // cleanup method
-  const cleanup = async () => {
-    if (fs.existsSync(filePath)) {
-      await fs.promises.unlink(filePath);
-    }
+  // Set up the S3 upload parameters
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME, // Your bucket name
+    Key: key, // e.g., "uploads/1625234875123-filename.png"
+    Body: buffer,
+    ContentType: file.type, // e.g., "image/jpeg"
   };
 
-  // call the cleanup method after the image has been uploaded and processed
-  // postImage(publicUrl)
-  //   .then(async () => {
-  //     await cleanup();
-  //   })
-  //   .catch(async (error) => {
-  //     console.error(error);
-  //     await cleanup();
-  //   });
+  // cleanup method
+  // const cleanup = async () => {
+  //   if (fs.existsSync(filePath)) {
+  //     await fs.promises.unlink(filePath);
+  //   }
+  // };
 
-  cleanup();
-  return c.json({ storagePath, publicUrl });
+  // const cleanUpImage = setTimeout(() => {
+  //   cleanup();
+  //   clearTimeout(cleanUpImage);
+  // }, 5000);
+  try {
+    // Upload the file to S3 and wait for the promise to resolve
+    await s3.send(new PutObjectCommand(params));
+    const publicUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
+    // uploadResult.Location contains the public URL for the file
+    return c.json({ publicUrl: publicUrl, s3Key: key }, 200);
+  } catch (error) {
+    console.error("Error uploading to S3:", error);
+    return c.json({ error: error || "Error uploading to S3" }, 500);
+  }
 });
 
 export const GET = handle(app);
