@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { FeatureHighlights } from "@/components/feature-highlights"; // Corrected import path
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner"; // Corrected import path
-import { UploadCard } from "./components/upload-card";
-import { NavigationBar } from "./components/Navigaion-bar";
+import { NavigationBar } from "@/components/Navigaion-bar";
+import { UploadCard } from "@/components/Upload-card";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
