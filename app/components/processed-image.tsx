@@ -13,24 +13,14 @@ export function ProcessedImage({
   uploadedImage,
   processedImage,
 }: ProcessedImageProps) {
-  const [sliderPosition, setSliderPosition] = useState(50);
+  const [sliderPosition, setSliderPosition] = useState(0);
 
   useEffect(() => {
     if (processedImage) {
-      setSliderPosition(50); // Reset slider when new image is processed
+      setSliderPosition(100); // Reset slider when new image is processed
     }
   }, [processedImage]);
 
-  if (uploadedImage) {
-    return (
-      <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8 h-full flex items-center justify-center">
-        <p className="text-white/70 text-lg">
-          Upload an image to see the result here
-        </p>
-      </div>
-    );
-  }
-  // Download processed image function
   const downloadImage = useCallback(async () => {
     if (!processedImage) return;
 
@@ -38,14 +28,19 @@ export function ProcessedImage({
       const blob = processedImage.startsWith("data:image")
         ? await (async () => {
             const res = await fetch(processedImage);
+
             return res.blob();
           })()
         : await (await fetch(processedImage)).blob();
 
+      const splitURLImage = processedImage.split("/");
+      const filenameWithExtension = splitURLImage.pop();
+      const fileName = filenameWithExtension?.split(".")[0];
+      console.log(fileName);
       const url = URL.createObjectURL(blob);
       const link = Object.assign(document.createElement("a"), {
         href: url,
-        download: "processed_image.png",
+        download: fileName || "image",
       });
 
       document.body.appendChild(link);
@@ -61,14 +56,14 @@ export function ProcessedImage({
     <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
       <h2 className="text-2xl font-semibold text-white mb-4">Result</h2>
       <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
-        <img
+        {/* <img
           src={
             uploadedImage ||
             "https://archive.org/download/placeholder-image/placeholder-image.jpg"
           }
           alt="Original"
           className="absolute top-0 left-0 w-full h-full object-cover"
-        />
+        /> */}
         {processedImage && (
           <div
             className="absolute top-0 left-0 h-full overflow-hidden"

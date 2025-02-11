@@ -38,7 +38,10 @@ export async function postImage(image_url: string) {
       },
     },
     output: {
-      format: "png",
+      format: {
+        type: "png",
+        compression: "fast",
+      },
     },
   });
 }

@@ -9,6 +9,7 @@ import {
   handleBackgroundRemoval,
   uploadImageToS3,
 } from "@/api/utils/removeBackground";
+import { LoadingSpinner } from "./ui/loading-spinner";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
@@ -18,6 +19,7 @@ export function UploadCard() {
   const [isUrlInputVisible, setIsUrlInputVisible] = useState(false);
   const [urlInput, setUrlInput] = useState<string>("");
   const [assignUrlLink, setAssignUrlLink] = useState<string>("");
+  const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -49,23 +51,30 @@ export function UploadCard() {
     reader.readAsDataURL(file);
   };
 
-  const getBackgroundRemoval = async () => {
+  const getBackgroundRemoval = useCallback(async () => {
     if (!preview) {
       console.error("No file selected");
       return;
     }
 
-    const uploadImageToAWS = await uploadImageToS3(preview, fileName);
-    const processedImage = await handleBackgroundRemoval({
-      preview,
-      fileName,
-      assignUrlLink: fileName ? uploadImageToAWS : assignUrlLink,
-    });
-    router.push(
-      `/remove-background/${processedImage}
-        `
-    );
-  };
+    setLoadingButton(true);
+    try {
+      const uploadImageToAWS = await uploadImageToS3(preview, fileName);
+      const processedImage = await handleBackgroundRemoval({
+        preview,
+        fileName,
+        assignUrlLink: fileName ? uploadImageToAWS : assignUrlLink,
+      });
+
+      if (processedImage) {
+        router.push(`/remove-background/${processedImage}`);
+      }
+    } catch (error) {
+      console.error("Error processing image:", error);
+    } finally {
+      setLoadingButton(false); // Re-enable button if needed (optional)
+    }
+  }, [assignUrlLink, fileName, preview, router]);
 
   const handleUrlSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -97,6 +106,7 @@ export function UploadCard() {
     [urlInput]
   );
 
+
   return (
     <div className="w-full max-w-lg">
       <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
@@ -126,7 +136,7 @@ export function UploadCard() {
           `}
         >
           {preview ? (
-            <div className="max-w-72 max-h-96 rounded-2xl bg-white/10 flex items-center justify-center mb-4  transition-all duration-200">
+            <div className="max-w-70 max-h-96 rounded-2xl bg-white/10 flex items-center justify-center mb-5  transition-all duration-400">
               <img src={preview} alt="File Preview" />
             </div>
           ) : (
@@ -159,10 +169,11 @@ export function UploadCard() {
           {/* Will show image preview once image is uploaded/pasted */}
           {fileName || preview ? (
             <Button
-              className="bg-blue-900 hover:bg-blue-700 text-white  transition-all duration-200 cursor-pointer "
+              className="bg-blue-900 hover:bg-blue-700 text-white  transition-all duration-200 cursor-pointer mt-5 p-6 font-bold text-md"
               onClick={getBackgroundRemoval}
+              disabled={loadingButton}
             >
-              Remove Background
+              {loadingButton ? <LoadingSpinner /> : "Remove Background"}
             </Button>
           ) : (
             <div className="flex items-center gap-4 text-sm text-white/50">
@@ -170,7 +181,7 @@ export function UploadCard() {
                 <FileType className="h-4 w-4" />
                 <span>PNG, JPG, WEBP</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 cursor-pointer">
                 <Link className="h-4 w-4" />
                 <span>or paste a URL</span>
               </div>

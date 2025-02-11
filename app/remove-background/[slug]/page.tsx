@@ -10,30 +10,21 @@ import { useRouter } from "next/navigation";
 import { getBackgroundRemovalImage } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-function Page({
-  params,
-  searchParams,
-}: {
-  params: { slug: number };
-  searchParams: { assignUrlLink: string };
-}) {
+function Page({ params }: { params: { slug: number } }) {
   const [backgroundRemovalLink, setBackgroundRemovalLink] = useState(null);
-  const { assignUrlLink } = searchParams;
   useEffect(() => {
     // Poll the API every 2 seconds
     const intervalId = setInterval(async () => {
       const processedImage = await getBackgroundRemovalImage(params.slug);
-      // console.log("Polling API, got:", processedImage?.result);
       if (processedImage?.status === "DONE") {
         setBackgroundRemovalLink(processedImage?.result);
         clearInterval(intervalId); // Stop polling once we have a valid image URL
       }
-    }, 2000);
+    }, 4000);
 
     // Clean up the interval on component unmount or when params.slug changes
     return () => clearInterval(intervalId);
   }, [params.slug]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#07c2cc] via-[#3216ea] to-[#000B24] overflow-hidden">
       {/* Pattern Overlay */}
@@ -85,7 +76,7 @@ function Page({
               ) : (
                 <div className="text-center text-white/70  flex items-center justify-center pt-[20vh]">
                   <h1 className="text-4xl font-bold mb-4">
-                   <LoadingSpinner />
+                    <LoadingSpinner />
                   </h1>
                 </div>
               )}
