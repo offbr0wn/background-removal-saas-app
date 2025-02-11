@@ -7,9 +7,10 @@ import { ArrowLeft, Slack } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getBackgroundRemovalImage } from "@/api/removeBackground";
+import { getBackgroundRemovalImage } from "@/api/utils/removeBackground";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
- function Page({
+function Page({
   params,
   searchParams,
 }: {
@@ -66,7 +67,7 @@ import { getBackgroundRemovalImage } from "@/api/removeBackground";
             Remove Image Background
           </h1>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-1 gap-8 justify-center items-center">
             <div>
               {/* <UploadCard
                 onImageUpload={handleImageUpload}
@@ -82,7 +83,11 @@ import { getBackgroundRemovalImage } from "@/api/removeBackground";
                   processedImage={backgroundRemovalLink}
                 />
               ) : (
-                <p className="text-white">Processing image...</p>
+                <div className="text-center text-white/70  flex items-center justify-center pt-[20vh]">
+                  <h1 className="text-4xl font-bold mb-4">
+                   <LoadingSpinner />
+                  </h1>
+                </div>
               )}
             </div>
           </div>

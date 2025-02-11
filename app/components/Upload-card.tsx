@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
-  getBackgroundRemovalImage,
   handleBackgroundRemoval,
-} from "@/api/removeBackground";
+  uploadImageToS3,
+} from "@/api/utils/removeBackground";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
@@ -49,56 +49,23 @@ export function UploadCard() {
     reader.readAsDataURL(file);
   };
 
-  // const handleBackgroundRemoval = async () => {
-
   const getBackgroundRemoval = async () => {
+    if (!preview) {
+      console.error("No file selected");
+      return;
+    }
+
+    const uploadImageToAWS = await uploadImageToS3(preview, fileName);
     const processedImage = await handleBackgroundRemoval({
       preview,
       fileName,
-      assignUrlLink,
+      assignUrlLink: fileName ? uploadImageToAWS : assignUrlLink,
     });
-
     router.push(
       `/remove-background/${processedImage}
         `
     );
   };
-  //   if (!preview) {
-  //     console.error("No file selected");
-  //     return;
-  //   }
-
-  //   // Fetch
-  //   const response = await fetch(preview);
-  //   const blob = await response.blob();
-  //   const file = new File([blob], fileName || "uploaded-image.png", {
-  //     type: blob.type,
-  //   });
-
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   const uploadRes = await fetch("/api/upload", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-
-  //   if (!uploadRes.ok) throw new Error("Upload failed");
-  //   const uploadData = await uploadRes.json();
-
-  //   const storedImageUrl = uploadData.publicUrl; // Use returned URL
-  //   const image_url = `http://localhost:3000${storedImageUrl}`;
-
-  //   // Api to remove background
-  //   const res = await fetch("/api/background-removal", {
-  //     method: "POST",
-  //     body: JSON.stringify({ image_url: assignUrlLink }),
-  //   });
-  //   const data = await res.json();
-  //   if (!data.imagePathDownload?.data?.id) throw new Error("Processing failed");
-
-  //   router.push(`/remove-background/${data.imagePathDownload.data.id}`);
-  // };
 
   const handleUrlSubmit = useCallback(
     async (e: React.FormEvent) => {

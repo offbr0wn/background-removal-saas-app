@@ -1,7 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
-
 type RemoveBackgroundProps = {
   preview: string | null;
   fileName: string | null;
@@ -28,18 +26,6 @@ export const handleBackgroundRemoval = async ({
   const formData = new FormData();
   formData.append("file", file);
 
-  //   const uploadRes = await fetch("/api/upload", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-
-  //   if (!uploadRes.ok) throw new Error("Upload failed");
-  //   const uploadData = await uploadRes.json();
-
-  //   const storedImageUrl = uploadData.publicUrl; // Use returned URL
-  //   const image_url = `http://localhost:3000${storedImageUrl}`;
-
-  // Api to remove background
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/background-removal`,
     {
@@ -47,10 +33,9 @@ export const handleBackgroundRemoval = async ({
       body: JSON.stringify({ image_url: assignUrlLink }),
     }
   );
-    const data = await res.json();
+  const data = await res.json();
   if (!data?.imagePathDownload?.data?.id) throw new Error("Processing failed");
   return data?.imagePathDownload?.data?.id;
-  // redirect(`/remove-background/${data.imagePathDownload.data.id}?assignUrlLink=${encodeURIComponent(assignUrlLink)}`);
 };
 
 export const getBackgroundRemovalImage = async (slug: number) => {
@@ -72,4 +57,32 @@ export const getBackgroundRemovalImage = async (slug: number) => {
   } catch (error) {
     console.error("Error fetching image:", error);
   }
+};
+
+export const uploadImageToS3 = async (
+  preview: string,
+  fileName: string | null
+) => {
+  const response = await fetch(preview);
+  const blob = await response.blob();
+  const file = new File([blob], fileName || "image.png", {
+    type: blob.type,
+  });
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const uploadRes = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!uploadRes?.ok) throw new Error("Upload failed");
+  const uploadData = await uploadRes.json();
+  const storedImageUrl = uploadData.publicUrl; // Use returned URL
+
+  return storedImageUrl;
 };

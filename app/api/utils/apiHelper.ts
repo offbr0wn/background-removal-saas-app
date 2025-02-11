@@ -1,17 +1,14 @@
-const API_URL = "https://api.claid.ai/v1-beta1/image/edit/async";
-const API_TOKEN = "485b3e54f57b495890069d570b3b3e8f";
-
 export async function apiRequest<T>(
   endpoint: string,
   method: string = "GET",
   body?: any
 ): Promise<T> {
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${process.env.CLAD_API_URL}${endpoint}`, {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${API_TOKEN}`,
+        Authorization: `Bearer ${process.env.CLAD_API_TOKEN}`,
       },
       body: body ? JSON.stringify(body) : undefined,
     });
