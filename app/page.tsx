@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FeatureHighlights } from "@/components/feature-highlights"; // Corrected import path
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,11 @@ import { UploadCard } from "@/components/Upload-card";
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Simulate any initial loading
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, []);
