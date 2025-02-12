@@ -100,5 +100,9 @@ app.post("/upload", async (c) => {
   }
 });
 
+app.get("/testing", (c) => {
+  return c.json({ message: "Hello, World!" });
+});
+
 export const GET = handle(app);
 export const POST = handle(app);
