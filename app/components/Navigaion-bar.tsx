@@ -1,6 +1,20 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+const navItems = [
+  {
+    name: "Features",
+    href: "/features",
+  },
+  {
+    name: "Examples",
+    href: "/examples",
+  },
+  {
+    name: "Pricing",
+    href: "/pricing",
+  },
+];
 export function NavigationBar() {
   return (
     <nav className="flex items-center justify-between">
@@ -12,13 +26,13 @@ export function NavigationBar() {
       </div>
 
       <div className="hidden md:flex items-center space-x-8">
-        {["Features", "Examples", "Pricing"].map((item) => (
+        {navItems.map((item, index) => (
           <Link
-            key={item}
-            href={`/${item.toLowerCase()}`}
+            key={item.name}
+            href={item.href}
             className="text-white/70 hover:text-white transition-colors cursor-pointer"
           >
-            {item}
+            {item.name}
           </Link>
         ))}
       </div>
