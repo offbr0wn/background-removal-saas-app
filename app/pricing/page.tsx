@@ -1,6 +1,6 @@
 "use client"
 
-import { Layout } from "@/components/layout"
+import { Layout } from "@/components/layout-page"
 import { Button } from "@/components/ui/button"
 import { Check, X } from "lucide-react"
 import Link from "next/link"

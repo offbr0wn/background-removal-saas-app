@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Layout } from "@/components/layout";
+import { Layout } from "@/components/layout-page";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
