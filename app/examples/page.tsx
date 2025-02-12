@@ -17,24 +17,28 @@ export default function ExamplesPage() {
       description:
         "Perfect for professional headshots and social media profiles",
       before:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jfYJ33HcnRO9gSOGSbMmQyCz6ch7L0.png",
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/photo-1738762389087-35bcc2b03b2d.avif",
       after:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-jfYJ33HcnRO9gSOGSbMmQyCz6ch7L0.png", // Using same image for demo
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/1739321421391-photo-1738762389087-35bcc2b03b2d.png", // Using same image for demo
       category: "Portrait",
     },
     {
       title: "Product Photography",
       description: "Ideal for e-commerce and product catalogs",
-      before: "/placeholder.svg?height=600&width=800",
-      after: "/placeholder.svg?height=600&width=800",
+      before:
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/product-image/rachit-tank-2cFZ_FB08UM-unsplash.jpg",
+      after:
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/product-image/1739391554642-rachit-tank-2cFZ_FB08UM-unsplash.png",
       category: "Product",
     },
     {
-      title: "Fashion Photography",
-      description: "Great for fashion catalogs and lookbooks",
-      before: "/placeholder.svg?height=600&width=800",
-      after: "/placeholder.svg?height=600&width=800",
-      category: "Fashion",
+      title: "Logo Removal",
+      description: "Great for removing logo ",
+      before:
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/logo-image/khadeeja-yasser-3U9L9Chc3is-unsplash.jpg",
+      after:
+        "https://background-removal-image-s3.s3.eu-west-2.amazonaws.com/example-pictures/logo-image/1739391774204-khadeeja-yasser-3U9L9Chc3is-unsplash.png",
+      category: "Graphics",
     },
   ];
 
@@ -48,7 +52,7 @@ export default function ExamplesPage() {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-6 py-24">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
