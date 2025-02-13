@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Layout } from "@/components/layout-page";
 import { Button } from "@/components/ui/button";
+import { useSwipeable } from "react-swipeable"; // Import swipeable hook
+
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -50,6 +52,12 @@ export default function ExamplesPage() {
     setCurrentExample((prev) => (prev - 1 + examples.length) % examples.length);
   };
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => nextExample(),
+    onSwipedRight: () => previousExample(),
+    preventScrollOnSwipe: true,
+    trackMouse: false, // Disable mouse swipes for desktop
+  });
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-6 py-10">
@@ -68,7 +76,7 @@ export default function ExamplesPage() {
           </p>
         </motion.div>
 
-        <div className="relative">
+        <div className="relative" {...handlers}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentExample}
@@ -103,13 +111,13 @@ export default function ExamplesPage() {
           {/* Navigation Arrows */}
           <button
             onClick={previousExample}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-colors hidden md:block"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={nextExample}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 bg-white/10 hover:bg-white/20 p-3 rounded-full text-white transition-colors hidden md:block"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
