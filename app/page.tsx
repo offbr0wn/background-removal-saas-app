@@ -129,7 +129,7 @@ export default function Home() {
 
             {/* Right Column - Upload Card */}
             <motion.div
-              className="flex md:justify-end justify-center"
+              className="flex md:justify-center justify-center"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
