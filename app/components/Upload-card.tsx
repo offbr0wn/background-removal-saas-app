@@ -10,6 +10,7 @@ import {
   uploadImageToS3,
 } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "./ui/loading-spinner";
+import Cookies from "js-cookie";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
@@ -21,6 +22,23 @@ export function UploadCard() {
   const [assignUrlLink, setAssignUrlLink] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
+  const MAX_API_USAGE = 5; // Limit before requiring signup
+
+  const setApiUsageCookie = () => {
+    let currentUsage = parseInt(Cookies.get("api_usage") || "0", 10);
+
+    if (currentUsage >= MAX_API_USAGE) {
+      alert("API limit reached. Please sign up and create an account.");
+      return false; // Prevent API call
+    }
+
+    Cookies.set("api_usage", (currentUsage + 1).toString(), {
+      expires: 30, // 30 days
+      path: "/",
+    });
+
+    return true; // Allow API call
+  };
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -56,10 +74,13 @@ export function UploadCard() {
       console.error("No file selected");
       return;
     }
+    if (!setApiUsageCookie()) return; // ✅ Stop if limit reached
+    // / ✅ Sets the cookie
 
     setLoadingButton(true);
     try {
       const uploadImageToAWS = await uploadImageToS3(preview, fileName);
+
       const processedImage = await handleBackgroundRemoval({
         preview,
         fileName,
@@ -71,8 +92,6 @@ export function UploadCard() {
       }
     } catch (error) {
       console.error("Error processing image:", error);
-    } finally {
-      setLoadingButton(false); // Re-enable button if needed (optional)
     }
   }, [assignUrlLink, fileName, preview, router]);
 
@@ -105,7 +124,6 @@ export function UploadCard() {
     },
     [urlInput]
   );
-
 
   return (
     <div className="w-full max-w-lg">
