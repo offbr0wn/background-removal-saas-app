@@ -1,16 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenu,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+
 import React from "react";
-import { cn } from "@/lib/utils";
 import { MobileNav } from "./ui/mobile-nav";
 
 const components: { title: string; href: string; description: string }[] = [
