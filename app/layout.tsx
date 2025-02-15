@@ -3,6 +3,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProviderComponent } from "./lib/clerk-component-type";
+import { Suspense } from "react";
+import { LoadingSpinner } from "./components/ui/loading-spinner";
 
 export const metadata: Metadata = {
   title: "RemoveBG - AI Background Removal",
@@ -15,6 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <Suspense fallback={<LoadingSpinner />}>
     <ClerkProviderComponent>
       <html lang="en">
         <body>
@@ -23,6 +26,7 @@ export default function RootLayout({
           <Analytics />
         </body>
       </html>
-    </ClerkProviderComponent>
+      </ClerkProviderComponent>
+    </Suspense>
   );
 }
