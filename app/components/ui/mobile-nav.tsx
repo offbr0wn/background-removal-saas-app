@@ -10,15 +10,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./collapsible";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { NavProps } from "../Navigaion-bar";
 
 const menuItems = [
   {
     title: "Features",
-    items: [
-      { title: "Background Removal", href: "/features" },
-      { title: "Batch Processing", href: "/features" },
-      { title: "High Quality", href: "/features" },
-    ],
+    items: [{ title: "Background Removal", href: "/features" }],
   },
   {
     title: "Pricing",
@@ -31,14 +35,11 @@ const menuItems = [
 
   {
     title: "Examples",
-    items: [
-      { title: "Gallery", href: "/examples" },
-      { title: "Use Cases", href: "/examples" },
-    ],
+    items: [{ title: "Gallery", href: "/examples" }],
   },
 ];
 
-export function MobileNav() {
+export function MobileNav({ usersFetched }: NavProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [openSections, setOpenSections] = React.useState<string[]>([]);
 
@@ -47,19 +48,23 @@ export function MobileNav() {
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
   };
-
   return (
     <div className="relative md:hidden">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative z-50"
-      >
-        <Menu className=" text-white" size={40} />
-        <span className="sr-only">Toggle menu</span>
-      </Button>
+      <div className=" flex items-center ">
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
 
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsOpen(!isOpen)}
+          className="relative z-50"
+        >
+          <Menu className=" text-white" size={40} />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </div>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -70,7 +75,7 @@ export function MobileNav() {
             className="absolute top-full right-0 mt-2 w-[50vw] z-50  bg-gray-900/40 backdrop-blur-md rounded-lg shadow-lg overflow-hidden border border-gray-800"
           >
             <div className="p-4">
-              {menuItems.map((section, index) => (
+              {menuItems?.map((section, index) => (
                 <Collapsible
                   key={section.title}
                   open={openSections.includes(section.title)}
@@ -87,33 +92,41 @@ export function MobileNav() {
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-1">
                     <div className="pl-4 space-y-1">
-                      {section.items.map((item) => (
+                      {section.items?.map((item) => (
                         <Link
-                          key={item.title}
-                          href={item.href}
+                          key={item?.title}
+                          href={item?.href}
                           className="block px-2 py-2 text-sm text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           onClick={() => setIsOpen(false)}
                         >
-                          {item.title}
+                          {item?.title}
                         </Link>
                       ))}
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
               ))}
-              <div className="mt-6 pt-6 border-t border-gray-800">
-                <div className="space-y-3">
-                  <Button
-                    variant="outline"
-                    className="w-full text-white border-white/20 hover:bg-white/10"
-                  >
-                    Log in
-                  </Button>
-                  <Button className="w-full bg-white hover:bg-white/90 text-black">
-                    Sign up
-                  </Button>
+              {!usersFetched?.userId && (
+                <div className="mt-6 pt-6 border-t border-gray-800">
+                  <div className="space-y-3">
+                    <SignedOut>
+                      <SignInButton>
+                        <Button
+                          variant="outline"
+                          className="w-full text-white border-white/20 hover:bg-white/10 dark"
+                        >
+                          <Link href="/login">Log in</Link>
+                        </Button>
+                      </SignInButton>
+                      <SignUpButton>
+                        <Button className="w-full bg-white hover:bg-white/90 text-black">
+                          <Link href="/signup">Sign up</Link>
+                        </Button>
+                      </SignUpButton>
+                    </SignedOut>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </motion.div>
         )}

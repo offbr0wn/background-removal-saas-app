@@ -5,14 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
 interface ProcessedImageProps {
-  uploadedImage: string | null;
   processedImage: string | null;
 }
 
-export function ProcessedImage({
-  uploadedImage,
-  processedImage,
-}: ProcessedImageProps) {
+export function ProcessedImage({ processedImage }: ProcessedImageProps) {
   const [sliderPosition, setSliderPosition] = useState(0);
 
   useEffect(() => {

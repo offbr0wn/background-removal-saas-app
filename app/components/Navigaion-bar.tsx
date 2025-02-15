@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MobileNav } from "./ui/mobile-nav";
 import {
   SignInButton,
@@ -11,7 +11,23 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import ClerkFetchUser from "@/middleware/clerk-fetch-user";
-
+export type NavProps = {
+  usersFetched:
+    | {
+        user: undefined;
+        userId: undefined;
+      }
+    | {
+        user: {
+          id: string | null;
+          firstName: string | null;
+          lastName: string | null;
+          email: string | null;
+          profileImage: string | null;
+        };
+        userId: string | null;
+      };
+};
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Alert Dialog",
@@ -64,13 +80,16 @@ const navItems = [
   },
 ];
 export function NavigationBar() {
+  const [usersFetched, setUsersFetched] = useState<NavProps >();
   useEffect(() => {
     const fetchClerkUsers = async () => {
       const usersFetched = await ClerkFetchUser();
-      console.log("fetching users", usersFetched);
+      setUsersFetched(usersFetched);
     };
     fetchClerkUsers();
-  });
+  }, []);
+
+
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -83,7 +102,7 @@ export function NavigationBar() {
       </Link>
 
       <div className="hidden md:flex items-center space-x-8">
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <Link
             key={item.name}
             href={item.href}
@@ -93,20 +112,20 @@ export function NavigationBar() {
           </Link>
         ))}
         <div className="flex items-center space-x-4 ">
-          <Button
-            variant="ghost"
-            className="text-gray-300 hover:text-white"
-            asChild
-          >
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button className="bg-blue-700 hover:bg-blue-700 text-white" asChild>
-            <Link href="/signup">Sign up</Link>
-          </Button>
-
           <SignedOut>
-            <SignInButton />
-            <SignUpButton />
+            <SignInButton>
+              <Button variant="ghost" className="text-white " asChild>
+                <Link href="/login">Log in</Link>
+              </Button>
+            </SignInButton>
+            <SignUpButton>
+              <Button
+                className="bg-blue-700 hover:bg-blue-700 text-white"
+                asChild
+              >
+                <Link href="/signup">Sign up</Link>
+              </Button>
+            </SignUpButton>
           </SignedOut>
 
           <SignedIn>
@@ -118,7 +137,7 @@ export function NavigationBar() {
 
       {/* Mobile Navigaiton */}
       <div className="md:hidden">
-        <MobileNav />
+        <MobileNav usersFetched={usersFetched} />
       </div>
     </nav>
   );
