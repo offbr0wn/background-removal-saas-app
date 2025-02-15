@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
-import { Suspense } from "react";
-import { LoadingSpinner } from "./components/ui/loading-spinner";
 import { ClerkProviderComponent } from "./middleware/clerk-component-type";
 
 export const metadata: Metadata = {
@@ -17,8 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-    <ClerkProviderComponent publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProviderComponent>
       <html lang="en">
         <body>
           {children}
@@ -26,7 +23,6 @@ export default function RootLayout({
           <Analytics />
         </body>
       </html>
-      </ClerkProviderComponent>
-    </Suspense>
+    </ClerkProviderComponent>
   );
 }

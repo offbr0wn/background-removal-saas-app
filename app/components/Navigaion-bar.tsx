@@ -4,14 +4,11 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MobileNav } from "./ui/mobile-nav";
 import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+  SignedInComponent,
+  SignedOutComponent,
+} from "@/middleware/clerk-component-type";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import ClerkFetchUser from "@/middleware/clerk-fetch-user";
-import { LoadingSpinner } from "./ui/loading-spinner";
 
 type UserType = {
   id: string | null;
@@ -79,8 +76,6 @@ const navItems = [
 export function NavigationBar() {
   const [usersFetched, setUsersFetched] = useState<NavProps | null>(null);
   const [loading, setLoading] = useState(true);
-  const SignedOutComponent = SignedOut as unknown as React.FC<{ children: React.ReactNode }>;
-  const SignedInComponent = SignedIn as unknown as React.FC<{ children: React.ReactNode }>;
 
   useEffect(() => {
     const fetchClerkUsers = async () => {
@@ -91,7 +86,7 @@ export function NavigationBar() {
     fetchClerkUsers();
   }, []);
 
-  if (loading) return <LoadingSpinner />
+  // if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -114,23 +109,24 @@ export function NavigationBar() {
           </Link>
         ))}
         <div className="flex items-center space-x-4 ">
-      
-            <SignedOutComponent>
-              <SignInButton>
-                <Button variant="ghost" className="text-white " asChild>
-                  <Link href="/login">Log in</Link>
-                </Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button
-                  className="bg-blue-700 hover:bg-blue-700 text-white"
-                  asChild
-                >
-                  <Link href="/signup">Sign up</Link>
-                </Button>
-              </SignUpButton>
-            </SignedOutComponent>
-          
+          {/* Clerk Auth Sign in / Sign out */}
+          <h2 className="text-white font-semibold ">{usersFetched?.user?.firstName}</h2>
+          <SignedOutComponent>
+            <SignInButton>
+              <Button variant="ghost" className="text-white " asChild>
+                <Link href="/login">Log in</Link>
+              </Button>
+            </SignInButton>
+            <SignUpButton>
+              <Button
+                className="bg-blue-700 hover:bg-blue-700 text-white"
+                asChild
+              >
+                <Link href="/signup">Sign up</Link>
+              </Button>
+            </SignUpButton>
+          </SignedOutComponent>
+
           <SignedInComponent>
             <UserButton />
           </SignedInComponent>
