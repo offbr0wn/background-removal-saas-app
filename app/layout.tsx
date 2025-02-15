@@ -17,16 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-    <ClerkProviderComponent publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProviderComponent>
       <html lang="en">
         <body>
-          {children}
+          <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
           <Toaster position="bottom-right" />
           <Analytics />
         </body>
       </html>
-      </ClerkProviderComponent>
-    </Suspense>
+    </ClerkProviderComponent>
   );
 }
