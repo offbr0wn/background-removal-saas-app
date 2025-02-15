@@ -45,9 +45,9 @@ export function MobileNav({ usersFetched }: any) {
   return (
     <div className="relative md:hidden">
       <div className=" flex items-center ">
-        {/* <SignedInComponent>
+        <SignedInComponent>
           <UserButton />
-        </SignedInComponent> */}
+        </SignedInComponent>
 
         <Button
           variant="ghost"
@@ -100,7 +100,7 @@ export function MobileNav({ usersFetched }: any) {
                   </CollapsibleContent>
                 </Collapsible>
               ))}
-              {/* {!usersFetched?.userId && (
+              {!usersFetched?.userId && (
                 <div className="mt-6 pt-6 border-t border-gray-800">
                   <div className="space-y-3">
                     <SignedOutComponent>
@@ -120,7 +120,7 @@ export function MobileNav({ usersFetched }: any) {
                     </SignedOutComponent>
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </motion.div>
         )}
