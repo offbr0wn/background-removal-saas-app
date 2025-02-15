@@ -7,7 +7,12 @@ import {
   SignedInComponent,
   SignedOutComponent,
 } from "@/middleware/clerk-component-type";
-import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useSession,
+} from "@clerk/nextjs";
 import ClerkFetchUser from "@/middleware/clerk-fetch-user";
 
 type UserType = {
@@ -75,19 +80,16 @@ const navItems = [
 
 export function NavigationBar() {
   const [usersFetched, setUsersFetched] = useState<NavProps | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { isSignedIn } = useSession();
 
   useEffect(() => {
     const fetchClerkUsers = async () => {
-      const usersFetched = await ClerkFetchUser();
-      setUsersFetched(usersFetched);
-      setLoading(false); // Set loading to false after fetching
+      const usersFetches = await ClerkFetchUser();
+      setUsersFetched(usersFetches);
     };
     fetchClerkUsers();
-  }, []);
+  }, [isSignedIn]);
 
-  console.log(usersFetched);
-  // if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -111,7 +113,9 @@ export function NavigationBar() {
         ))}
         <div className="flex items-center space-x-4 ">
           {/* Clerk Auth Sign in / Sign out */}
-          <h2 className="text-white font-semibold ">{usersFetched?.user?.firstName}</h2>
+          <h2 className="text-white font-semibold ">
+            {usersFetched?.user?.firstName}
+          </h2>
           <SignedOutComponent>
             <SignInButton>
               <Button variant="ghost" className="text-white " asChild>
