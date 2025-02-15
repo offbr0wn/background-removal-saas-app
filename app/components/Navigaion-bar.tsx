@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { MobileNav } from "./ui/mobile-nav";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import ClerkFetchUser from "@/middleware/clerk-fetch-user";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -56,6 +64,13 @@ const navItems = [
   },
 ];
 export function NavigationBar() {
+  useEffect(() => {
+    const fetchClerkUsers = async () => {
+      const usersFetched = await ClerkFetchUser();
+      console.log("fetching users", usersFetched);
+    };
+    fetchClerkUsers();
+  });
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -63,7 +78,7 @@ export function NavigationBar() {
           <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
             <span className="text-white font-bold">RB</span>
           </div>
-          <span className="text-white text-xl font-bold">RemoveBG</span>
+          <span className="text-white text-xl font-bold">Remove</span>
         </div>
       </Link>
 
@@ -88,6 +103,15 @@ export function NavigationBar() {
           <Button className="bg-blue-700 hover:bg-blue-700 text-white" asChild>
             <Link href="/signup">Sign up</Link>
           </Button>
+
+          <SignedOut>
+            <SignInButton />
+            <SignUpButton />
+          </SignedOut>
+
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </div>
       </div>
       {/* Feature for when app starts to gain more traction  */}

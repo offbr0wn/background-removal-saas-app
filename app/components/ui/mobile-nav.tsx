@@ -1,49 +1,61 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible"
+import * as React from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Menu, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./collapsible";
 
 const menuItems = [
-  {
-    title: "Getting Started",
-    items: [
-      { title: "Introduction", href: "/introduction" },
-      { title: "Installation", href: "/installation" },
-      { title: "Typography", href: "/typography" },
-    ],
-  },
   {
     title: "Features",
     items: [
       { title: "Background Removal", href: "/features" },
-      { title: "Batch Processing", href: "/features#batch" },
-      { title: "High Quality", href: "/features#quality" },
+      { title: "Batch Processing", href: "/features" },
+      { title: "High Quality", href: "/features" },
     ],
   },
+  {
+    title: "Pricing",
+    items: [
+      { title: "Free Tier", href: "/pricing" },
+      { title: "Pro Tier", href: "/pricing" },
+      { title: "Enterprise Tier", href: "/pricing" },
+    ],
+  },
+
   {
     title: "Examples",
     items: [
       { title: "Gallery", href: "/examples" },
-      { title: "Use Cases", href: "/examples#use-cases" },
+      { title: "Use Cases", href: "/examples" },
     ],
   },
-]
+];
 
 export function MobileNav() {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [openSections, setOpenSections] = React.useState<string[]>([])
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [openSections, setOpenSections] = React.useState<string[]>([]);
 
   const toggleSection = (title: string) => {
-    setOpenSections((prev) => (prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]))
-  }
+    setOpenSections((prev) =>
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
+    );
+  };
 
   return (
     <div className="relative md:hidden">
-      <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="relative z-50">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setIsOpen(!isOpen)}
+        className="relative z-50"
+      >
         <Menu className=" text-white" size={40} />
         <span className="sr-only">Toggle menu</span>
       </Button>
@@ -91,10 +103,15 @@ export function MobileNav() {
               ))}
               <div className="mt-6 pt-6 border-t border-gray-800">
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                  <Button
+                    variant="outline"
+                    className="w-full text-white border-white/20 hover:bg-white/10"
+                  >
                     Log in
                   </Button>
-                  <Button className="w-full bg-white hover:bg-white/90 text-black">Sign up</Button>
+                  <Button className="w-full bg-white hover:bg-white/90 text-black">
+                    Sign up
+                  </Button>
                 </div>
               </div>
             </div>
@@ -102,6 +119,5 @@ export function MobileNav() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
-

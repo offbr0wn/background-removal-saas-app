@@ -6,11 +6,15 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import { getProcessedImage, postImage } from "../utils/apiHelper";
 import { authMiddleware } from "@/middleware/auth";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { User } from "lucide-react";
+import { clerkClient } from "@clerk/nextjs/server";
 export const runtime = "nodejs";
 
 const app = new Hono().basePath("/api");
 
 app.use("/api/*", authMiddleware);
+// app.use("*", clerkMiddleware());
 
 app.post("/background-removal", async (c) => {
   try {
@@ -100,8 +104,11 @@ app.post("/upload", async (c) => {
   }
 });
 
-app.get("/testing", (c) => {
-  return c.json({ message: "Hello, World!" });
+app.get("/admin", async (c) => {
+  
+
+ 
+  return c.json({ message: "Hello, World!"});
 });
 
 export const GET = handle(app);
