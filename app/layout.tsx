@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
-import { ClerkProviderComponent } from "./lib/clerk-component-type";
 import { Suspense } from "react";
 import { LoadingSpinner } from "./components/ui/loading-spinner";
+import { ClerkProviderComponent } from "./lib/clerk-component-type";
 
 export const metadata: Metadata = {
   title: "RemoveBG - AI Background Removal",
