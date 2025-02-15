@@ -1,53 +1,64 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Menu, ChevronDown } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible"
+import * as React from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Menu, ChevronDown } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./collapsible";
+import { SignedInComponent, SignedOutComponent } from "@/lib/clerk-component-type";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+
 
 const menuItems = [
   {
-    title: "Getting Started",
-    items: [
-      { title: "Introduction", href: "/introduction" },
-      { title: "Installation", href: "/installation" },
-      { title: "Typography", href: "/typography" },
-    ],
+    title: "Features",
+    items: [{ title: "Background Removal", href: "/features" }],
   },
   {
-    title: "Features",
+    title: "Pricing",
     items: [
-      { title: "Background Removal", href: "/features" },
-      { title: "Batch Processing", href: "/features#batch" },
-      { title: "High Quality", href: "/features#quality" },
+      { title: "Free Tier", href: "/pricing" },
+      { title: "Pro Tier", href: "/pricing" },
+      { title: "Enterprise Tier", href: "/pricing" },
     ],
   },
+
   {
     title: "Examples",
-    items: [
-      { title: "Gallery", href: "/examples" },
-      { title: "Use Cases", href: "/examples#use-cases" },
-    ],
+    items: [{ title: "Gallery", href: "/examples" }],
   },
-]
+];
 
-export function MobileNav() {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [openSections, setOpenSections] = React.useState<string[]>([])
-
+export function MobileNav({ usersFetched }: any) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [openSections, setOpenSections] = React.useState<string[]>([]);
   const toggleSection = (title: string) => {
-    setOpenSections((prev) => (prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]))
-  }
-
+    setOpenSections((prev) =>
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
+    );
+  };
   return (
     <div className="relative md:hidden">
-      <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)} className="relative z-50">
-        <Menu className=" text-white" size={40} />
-        <span className="sr-only">Toggle menu</span>
-      </Button>
+      <div className=" flex items-center ">
+        <SignedInComponent>
+          <UserButton />
+        </SignedInComponent>
 
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsOpen(!isOpen)}
+          className="relative z-50"
+        >
+          <Menu className=" text-white" size={40} />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </div>
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -58,7 +69,7 @@ export function MobileNav() {
             className="absolute top-full right-0 mt-2 w-[50vw] z-50  bg-gray-900/40 backdrop-blur-md rounded-lg shadow-lg overflow-hidden border border-gray-800"
           >
             <div className="p-4">
-              {menuItems.map((section, index) => (
+              {menuItems?.map((section, index) => (
                 <Collapsible
                   key={section.title}
                   open={openSections.includes(section.title)}
@@ -75,33 +86,45 @@ export function MobileNav() {
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-1">
                     <div className="pl-4 space-y-1">
-                      {section.items.map((item) => (
+                      {section.items?.map((item) => (
                         <Link
-                          key={item.title}
-                          href={item.href}
+                          key={item?.title}
+                          href={item?.href}
                           className="block px-2 py-2 text-sm text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           onClick={() => setIsOpen(false)}
                         >
-                          {item.title}
+                          {item?.title}
                         </Link>
                       ))}
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
               ))}
-              <div className="mt-6 pt-6 border-t border-gray-800">
-                <div className="space-y-3">
-                  <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
-                    Log in
-                  </Button>
-                  <Button className="w-full bg-white hover:bg-white/90 text-black">Sign up</Button>
+              {!usersFetched?.userId && (
+                <div className="mt-6 pt-6 border-t border-gray-800">
+                  <div className="space-y-3">
+                    <SignedOutComponent>
+                      <SignInButton>
+                        <Button
+                          variant="outline"
+                          className="w-full text-white border-white/20 hover:bg-white/10 dark"
+                        >
+                          <Link href="/login">Log in</Link>
+                        </Button>
+                      </SignInButton>
+                      <SignUpButton>
+                        <Button className="w-full bg-white hover:bg-white/90 text-black">
+                          <Link href="/signup">Sign up</Link>
+                        </Button>
+                      </SignUpButton>
+                    </SignedOutComponent>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
-

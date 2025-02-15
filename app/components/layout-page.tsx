@@ -18,7 +18,7 @@ export function Layout({ children }: LayoutProps) {
         <main className="flex-1 flex flex-col">{children}</main>
         <footer className="bg-black/20 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
-            <p className="text-white/70">&copy; 2023 RemoveBG. All rights reserved.</p>
+            <p className="text-white/70">&copy; 2024 RemoveBG. All rights reserved.</p>
             <div className="flex gap-4">
               <Link href="/privacy" className="text-white/70 hover:text-white">
                 Privacy Policy

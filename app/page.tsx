@@ -116,7 +116,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full px-8 border-white/10 text-white hover:bg-white/10"
+                  className="rounded-full px-8 border-white/10 text-white hover:bg-white/10 dark"
                 >
                   Watch demo
                 </Button>

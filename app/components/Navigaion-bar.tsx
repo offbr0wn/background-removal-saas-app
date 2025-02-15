@@ -1,9 +1,29 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MobileNav } from "./ui/mobile-nav";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import ClerkFetchUser from "@/middleware/clerk-fetch-user";
+import { LoadingSpinner } from "./ui/loading-spinner";
 
+type UserType = {
+  id: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  profileImage: string | null;
+} | null;
+export type NavProps = {
+  user: UserType | null;
+  userId: string | null;
+} | null;
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Alert Dialog",
@@ -55,7 +75,23 @@ const navItems = [
     href: "/pricing",
   },
 ];
+
 export function NavigationBar() {
+  const [usersFetched, setUsersFetched] = useState<NavProps | null>(null);
+  const [loading, setLoading] = useState(true);
+  const SignedOutComponent = SignedOut as unknown as React.FC<{ children: React.ReactNode }>;
+  const SignedInComponent = SignedIn as unknown as React.FC<{ children: React.ReactNode }>;
+
+  useEffect(() => {
+    const fetchClerkUsers = async () => {
+      const usersFetched = await ClerkFetchUser();
+      setUsersFetched(usersFetched);
+      setLoading(false); // Set loading to false after fetching
+    };
+    fetchClerkUsers();
+  }, []);
+
+  if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -63,12 +99,12 @@ export function NavigationBar() {
           <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
             <span className="text-white font-bold">RB</span>
           </div>
-          <span className="text-white text-xl font-bold">RemoveBG</span>
+          <span className="text-white text-xl font-bold">Remove</span>
         </div>
       </Link>
 
       <div className="hidden md:flex items-center space-x-8">
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <Link
             key={item.name}
             href={item.href}
@@ -78,23 +114,33 @@ export function NavigationBar() {
           </Link>
         ))}
         <div className="flex items-center space-x-4 ">
-          <Button
-            variant="ghost"
-            className="text-gray-300 hover:text-white"
-            asChild
-          >
-            <Link href="/login">Log in</Link>
-          </Button>
-          <Button className="bg-blue-700 hover:bg-blue-700 text-white" asChild>
-            <Link href="/signup">Sign up</Link>
-          </Button>
+      
+            <SignedOutComponent>
+              <SignInButton>
+                <Button variant="ghost" className="text-white " asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button
+                  className="bg-blue-700 hover:bg-blue-700 text-white"
+                  asChild
+                >
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </SignUpButton>
+            </SignedOutComponent>
+          
+          <SignedInComponent>
+            <UserButton />
+          </SignedInComponent>
         </div>
       </div>
       {/* Feature for when app starts to gain more traction  */}
 
       {/* Mobile Navigaiton */}
       <div className="md:hidden">
-        <MobileNav />
+        <MobileNav usersFetched={usersFetched} />
       </div>
     </nav>
   );

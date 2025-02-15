@@ -11,6 +11,8 @@ import {
 } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { Toaster } from "./ui/sonner";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
@@ -103,6 +105,8 @@ export function UploadCard() {
 
       try {
         const response = await fetch(urlInput);
+        console.log(response);
+
         if (!response.ok) throw new Error("Failed to fetch image");
         const blob = await response.blob();
         const reader = new FileReader();
@@ -115,16 +119,18 @@ export function UploadCard() {
         };
         reader.readAsDataURL(blob);
         setUrlInput("");
-
         setIsUrlInputVisible(false);
-        // toast.success("Image loaded successfully")
+        toast.success("Image loaded successfully");
       } catch (error) {
         console.error("Error loading image:", error);
+       
+        toast.error(error?.toString(),{
+          richColors: true
+        });
       }
     },
     [urlInput]
   );
-
   return (
     <div className="w-full max-w-lg">
       <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">

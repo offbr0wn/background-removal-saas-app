@@ -9,15 +9,20 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBackgroundRemovalImage } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { toast } from "sonner";
 
 function Page({ params }: { params: { slug: number } }) {
   const [backgroundRemovalLink, setBackgroundRemovalLink] = useState(null);
+  const router = useRouter();
+
   useEffect(() => {
     // Poll the API every 2 seconds
     const intervalId = setInterval(async () => {
       const processedImage = await getBackgroundRemovalImage(params.slug);
       if (processedImage?.status === "DONE") {
         setBackgroundRemovalLink(processedImage?.result);
+        toast.success("Background removed successfully");
+
         clearInterval(intervalId); // Stop polling once we have a valid image URL
       }
     }, 4000);
@@ -25,6 +30,7 @@ function Page({ params }: { params: { slug: number } }) {
     // Clean up the interval on component unmount or when params.slug changes
     return () => clearInterval(intervalId);
   }, [params.slug]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#07c2cc] via-[#3216ea] to-[#000B24] overflow-hidden">
       {/* Pattern Overlay */}
@@ -60,17 +66,9 @@ function Page({ params }: { params: { slug: number } }) {
 
           <div className="grid md:grid-cols-1 gap-8 justify-center items-center">
             <div>
-              {/* <UploadCard
-                onImageUpload={handleImageUpload}
-                uploadedImage={uploadedImage}
-                processedImage={processedImage}
-              /> */}
-              {/* {backgroundRemovalLink && <img src={backgroundRemovalLink} />} */}
-            </div>
-            <div>
               {backgroundRemovalLink ? (
                 <ProcessedImage
-                  uploadedImage={null}
+                 
                   processedImage={backgroundRemovalLink}
                 />
               ) : (

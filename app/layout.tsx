@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { Toaster } from "@/components/ui/sonner";
+import { ClerkProviderComponent } from "./lib/clerk-component-type";
 
 export const metadata: Metadata = {
   title: "RemoveBG - AI Background Removal",
@@ -13,11 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProviderComponent>
+      <html lang="en">
+        <body>
+          {children}
+          <Toaster position="bottom-right" />
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProviderComponent>
   );
 }
