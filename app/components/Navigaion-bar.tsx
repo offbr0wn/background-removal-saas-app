@@ -86,6 +86,7 @@ export function NavigationBar() {
     fetchClerkUsers();
   }, []);
 
+  console.log(usersFetched);
   // if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
