@@ -17,14 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProviderComponent>
-      <html lang="en">
-        <body>
-          <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
-          <Toaster position="bottom-right" />
-          <Analytics />
-        </body>
-      </html>
-    </ClerkProviderComponent>
+    // <ClerkProviderComponent>
+
+    <html lang="en">
+      <body>
+        {children}
+        <Toaster position="bottom-right" />
+        <Analytics />
+      </body>
+    </html>
+
+    // </ClerkProviderComponent>
   );
 }

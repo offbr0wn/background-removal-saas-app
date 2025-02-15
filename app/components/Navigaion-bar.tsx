@@ -82,16 +82,16 @@ export function NavigationBar() {
   const SignedOutComponent = SignedOut as unknown as React.FC<{ children: React.ReactNode }>;
   const SignedInComponent = SignedIn as unknown as React.FC<{ children: React.ReactNode }>;
 
-  useEffect(() => {
-    const fetchClerkUsers = async () => {
-      const usersFetched = await ClerkFetchUser();
-      setUsersFetched(usersFetched);
-      setLoading(false); // Set loading to false after fetching
-    };
-    fetchClerkUsers();
-  }, []);
+  // useEffect(() => {
+  //   const fetchClerkUsers = async () => {
+  //     const usersFetched = await ClerkFetchUser();
+  //     setUsersFetched(usersFetched);
+  //     setLoading(false); // Set loading to false after fetching
+  //   };
+  //   fetchClerkUsers();
+  // }, []);
 
-  if (loading) return <LoadingSpinner />
+  // if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -114,8 +114,8 @@ export function NavigationBar() {
           </Link>
         ))}
         <div className="flex items-center space-x-4 ">
-      
-            <SignedOutComponent>
+      {/* Clerk Auth Sign in / Sign out */}
+            {/* <SignedOutComponent>
               <SignInButton>
                 <Button variant="ghost" className="text-white " asChild>
                   <Link href="/login">Log in</Link>
@@ -133,7 +133,7 @@ export function NavigationBar() {
           
           <SignedInComponent>
             <UserButton />
-          </SignedInComponent>
+          </SignedInComponent> */}
         </div>
       </div>
       {/* Feature for when app starts to gain more traction  */}
