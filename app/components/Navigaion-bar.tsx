@@ -11,23 +11,19 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import ClerkFetchUser from "@/middleware/clerk-fetch-user";
+import { LoadingSpinner } from "./ui/loading-spinner";
+
+type UserType = {
+  id: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  profileImage: string | null;
+} | null;
 export type NavProps = {
-  usersFetched:
-    | {
-        user: undefined;
-        userId: undefined;
-      }
-    | {
-        user: {
-          id: string | null;
-          firstName: string | null;
-          lastName: string | null;
-          email: string | null;
-          profileImage: string | null;
-        };
-        userId: string | null;
-      };
-};
+  user: UserType | null;
+  userId: string | null;
+} | null;
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Alert Dialog",
@@ -79,17 +75,23 @@ const navItems = [
     href: "/pricing",
   },
 ];
+
 export function NavigationBar() {
-  const [usersFetched, setUsersFetched] = useState<NavProps >();
+  const [usersFetched, setUsersFetched] = useState<NavProps | null>(null);
+  const [loading, setLoading] = useState(true);
+  const SignedOutComponent = SignedOut as unknown as React.FC<{ children: React.ReactNode }>;
+  const SignedInComponent = SignedIn as unknown as React.FC<{ children: React.ReactNode }>;
+
   useEffect(() => {
     const fetchClerkUsers = async () => {
       const usersFetched = await ClerkFetchUser();
       setUsersFetched(usersFetched);
+      setLoading(false); // Set loading to false after fetching
     };
     fetchClerkUsers();
   }, []);
 
-
+  if (loading) return <LoadingSpinner />
   return (
     <nav className="flex items-center justify-between">
       <Link href="/">
@@ -112,25 +114,26 @@ export function NavigationBar() {
           </Link>
         ))}
         <div className="flex items-center space-x-4 ">
-          <SignedOut>
-            <SignInButton>
-              <Button variant="ghost" className="text-white " asChild>
-                <Link href="/login">Log in</Link>
-              </Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button
-                className="bg-blue-700 hover:bg-blue-700 text-white"
-                asChild
-              >
-                <Link href="/signup">Sign up</Link>
-              </Button>
-            </SignUpButton>
-          </SignedOut>
-
-          <SignedIn>
+      
+            <SignedOutComponent>
+              <SignInButton>
+                <Button variant="ghost" className="text-white " asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button
+                  className="bg-blue-700 hover:bg-blue-700 text-white"
+                  asChild
+                >
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </SignUpButton>
+            </SignedOutComponent>
+          
+          <SignedInComponent>
             <UserButton />
-          </SignedIn>
+          </SignedInComponent>
         </div>
       </div>
       {/* Feature for when app starts to gain more traction  */}

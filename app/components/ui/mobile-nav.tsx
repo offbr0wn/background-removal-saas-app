@@ -10,14 +10,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./collapsible";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
-import { NavProps } from "../Navigaion-bar";
+import { SignedInComponent, SignedOutComponent } from "@/lib/clerk-component-type";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+
 
 const menuItems = [
   {
@@ -39,10 +34,9 @@ const menuItems = [
   },
 ];
 
-export function MobileNav({ usersFetched }: NavProps) {
+export function MobileNav({ usersFetched }: any) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [openSections, setOpenSections] = React.useState<string[]>([]);
-
   const toggleSection = (title: string) => {
     setOpenSections((prev) =>
       prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
@@ -51,9 +45,9 @@ export function MobileNav({ usersFetched }: NavProps) {
   return (
     <div className="relative md:hidden">
       <div className=" flex items-center ">
-        <SignedIn>
+        <SignedInComponent>
           <UserButton />
-        </SignedIn>
+        </SignedInComponent>
 
         <Button
           variant="ghost"
@@ -109,7 +103,7 @@ export function MobileNav({ usersFetched }: NavProps) {
               {!usersFetched?.userId && (
                 <div className="mt-6 pt-6 border-t border-gray-800">
                   <div className="space-y-3">
-                    <SignedOut>
+                    <SignedOutComponent>
                       <SignInButton>
                         <Button
                           variant="outline"
@@ -123,7 +117,7 @@ export function MobileNav({ usersFetched }: NavProps) {
                           <Link href="/signup">Sign up</Link>
                         </Button>
                       </SignUpButton>
-                    </SignedOut>
+                    </SignedOutComponent>
                   </div>
                 </div>
               )}
