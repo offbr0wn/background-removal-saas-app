@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-// import { Layout } from "@/components/layout"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Zap, Image, Clock, Lock, Wand2, Layers, Palette } from "lucide-react"
 import Link from "next/link"
