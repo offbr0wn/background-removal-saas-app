@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
-import { ClerkProviderComponent } from "./lib/clerk-component-type";
+import { Suspense } from "react";
+import { LoadingSpinner } from "./components/ui/loading-spinner";
+import { ClerkProviderComponent } from "./middleware/clerk-component-type";
 
 export const metadata: Metadata = {
   title: "RemoveBG - AI Background Removal",
@@ -15,7 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProviderComponent>
+    <Suspense fallback={<LoadingSpinner />}>
+    <ClerkProviderComponent publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html lang="en">
         <body>
           {children}
@@ -23,6 +26,7 @@ export default function RootLayout({
           <Analytics />
         </body>
       </html>
-    </ClerkProviderComponent>
+      </ClerkProviderComponent>
+    </Suspense>
   );
 }

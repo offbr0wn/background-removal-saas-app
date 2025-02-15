@@ -10,7 +10,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./collapsible";
-import { SignedInComponent, SignedOutComponent } from "@/lib/clerk-component-type";
+import { SignedInComponent, SignedOutComponent } from "@/middleware/clerk-component-type";
 import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 
