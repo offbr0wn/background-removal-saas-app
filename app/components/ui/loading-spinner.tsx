@@ -6,7 +6,7 @@ interface LoadingSpinnerProps {
   className?: string
 }
 
-export function LoadingSpinner({ size = "lg", color = "primary", className }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = "lg", color = "white", className }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-5 h-5",
     md: "w-8 h-8",

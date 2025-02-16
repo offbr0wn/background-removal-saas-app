@@ -3,17 +3,15 @@
 import { NavigationBar } from "@/components/Navigaion-bar";
 import { ProcessedImage } from "@/components/processed-image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Slack } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getBackgroundRemovalImage } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 
 function Page({ params }: { params: { slug: number } }) {
   const [backgroundRemovalLink, setBackgroundRemovalLink] = useState(null);
-  const router = useRouter();
 
   useEffect(() => {
     // Poll the API every 2 seconds
@@ -21,11 +19,13 @@ function Page({ params }: { params: { slug: number } }) {
       const processedImage = await getBackgroundRemovalImage(params.slug);
       if (processedImage?.status === "DONE") {
         setBackgroundRemovalLink(processedImage?.result);
-        toast.success("Background removed successfully");
-
+        toast({
+          duration: 2000,
+          description: "Background removed successfully",
+        });
         clearInterval(intervalId); // Stop polling once we have a valid image URL
       }
-    }, 4000);
+    }, 2000);
 
     // Clean up the interval on component unmount or when params.slug changes
     return () => clearInterval(intervalId);
@@ -49,28 +49,24 @@ function Page({ params }: { params: { slug: number } }) {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 py-12">
+        <main className="max-w-7xl mx-auto px-6 py-12 pt-8">
           <Link href="/">
             <Button
               variant="ghost"
-              className="mb-8 text-white hover:text-white/80"
+              className="mb-5 text-white hover:text-white/80"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Button>
           </Link>
 
-          <h1 className="text-4xl font-bold text-white mb-8">
-            Remove Image Background
-          </h1>
-
-          <div className="grid md:grid-cols-1 gap-8 justify-center items-center">
+          <div className="grid md:grid-rows-1 gap-2 justify-center items-center">
+            <h1 className="text-4xl font-bold text-white mb-8">
+              Remove Image Background
+            </h1>
             <div>
               {backgroundRemovalLink ? (
-                <ProcessedImage
-                 
-                  processedImage={backgroundRemovalLink}
-                />
+                <ProcessedImage processedImage={backgroundRemovalLink} />
               ) : (
                 <div className="text-center text-white/70  flex items-center justify-center pt-[20vh]">
                   <h1 className="text-4xl font-bold mb-4">

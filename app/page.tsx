@@ -1,21 +1,24 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FeatureHighlights } from "@/components/feature-highlights"; // Corrected import path
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner"; // Corrected import path
 import { NavigationBar } from "@/components/Navigaion-bar";
 import { UploadCard } from "@/components/Upload-card";
+import { useToast } from "./hooks/use-toast";
+import { Toaster } from "./components/ui/toaster";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // Simulate any initial loading
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 800);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, []);
@@ -53,6 +56,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#07c2cc] via-[#0061ff] to-[#000B24] overflow-hidden">
       {/* Pattern Overlay */}
+      <Toaster />
+
       <div
         className="fixed inset-0 opacity-5"
         style={{

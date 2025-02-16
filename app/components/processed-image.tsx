@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface ProcessedImageProps {
   processedImage: string | null;
@@ -32,7 +33,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
       const splitURLImage = processedImage.split("/");
       const filenameWithExtension = splitURLImage.pop();
       const fileName = filenameWithExtension?.split(".")[0];
-      console.log(fileName);
+
       const url = URL.createObjectURL(blob);
       const link = Object.assign(document.createElement("a"), {
         href: url,
@@ -41,6 +42,10 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
 
       document.body.appendChild(link);
       link.click();
+      toast({
+        duration: 2000,
+        description: "Image downloaded successfully",
+      })
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -49,8 +54,8 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
   }, [processedImage]);
 
   return (
-    <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
-      <h2 className="text-2xl font-semibold text-white mb-4">Result</h2>
+    <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8 w-[45vw]  ">
+      <h2 className="text-6xl font-bold text-white mb-4">Result</h2>
       <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
         {/* <img
           src={
@@ -68,7 +73,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
             <img
               src={processedImage || "/placeholder.svg"}
               alt="Processed"
-              className="absolute top-0 left-0 w-full h-full object-cover"
+              className="absolute top-0 left-0 w-full h- object-cover"
             />
           </div>
         )}
