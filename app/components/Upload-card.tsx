@@ -11,13 +11,13 @@ import {
 } from "@/api/utils/removeBackground";
 import { LoadingSpinner } from "./ui/loading-spinner";
 import Cookies from "js-cookie";
-import { toast } from "sonner";
-import { Toaster } from "./ui/sonner";
+import { useToast } from "@/hooks/use-toast";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const [isUrlInputVisible, setIsUrlInputVisible] = useState(false);
   const [urlInput, setUrlInput] = useState<string>("");
@@ -105,7 +105,6 @@ export function UploadCard() {
 
       try {
         const response = await fetch(urlInput);
-        console.log(response);
 
         if (!response.ok) throw new Error("Failed to fetch image");
         const blob = await response.blob();
@@ -120,12 +119,15 @@ export function UploadCard() {
         reader.readAsDataURL(blob);
         setUrlInput("");
         setIsUrlInputVisible(false);
-        toast.success("Image loaded successfully");
+        toast({
+          description: "Image loaded successfully",
+        });
       } catch (error) {
         console.error("Error loading image:", error);
-       
-        toast.error(error?.toString(),{
-          richColors: true
+
+        toast({
+          variant: "destructive",
+          description: error?.toString(),
         });
       }
     },
