@@ -22,9 +22,9 @@ const menuItems = [
   {
     title: "Pricing",
     items: [
-      { title: "Free Tier", href: "/pricing" },
-      { title: "Pro Tier", href: "/pricing" },
-      { title: "Enterprise Tier", href: "/pricing" },
+      { title: "Free Tier", href: "/pricing#Basic" },
+      { title: "Pro Tier", href: "/pricing#Pro" },
+      { title: "Enterprise Tier", href: "/pricing#Enterprise" },
     ],
   },
 

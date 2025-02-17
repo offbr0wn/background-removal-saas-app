@@ -4,17 +4,16 @@ import { HTTPException } from "hono/http-exception";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
-import { getProcessedImage, postImage } from "../utils/apiHelper";
+import { getProcessedImage, postImage } from "../helpers/apiHelper";
 import { authMiddleware } from "@/middleware/auth";
-import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
-import { User } from "lucide-react";
+
 import { clerkClient } from "@clerk/nextjs/server";
+
 export const runtime = "nodejs";
 
 const app = new Hono().basePath("/api");
 
 app.use("/api/*", authMiddleware);
-// app.use("*", clerkMiddleware());
 
 app.post("/background-removal", async (c) => {
   try {
@@ -22,6 +21,7 @@ app.post("/background-removal", async (c) => {
     if (!image_url) {
       throw new HTTPException(401, { message: "No image found" });
     }
+
     const imagePathDownload = await postImage(image_url);
 
     return c.json({ imagePathDownload });
@@ -104,11 +104,28 @@ app.post("/upload", async (c) => {
   }
 });
 
-app.get("/admin", async (c) => {
-  
 
- 
-  return c.json({ message: "Hello, World!"});
+// Route to update user metadata
+app.post("/created-free-user", async (c) => {
+  const props = await c.req.json();
+  const client = await clerkClient();
+
+  if (!props.userId) {
+    return c.json({ success: false, error: "User not found" }, 401);
+  }
+  await client.users.updateUserMetadata(props.userId, {
+    privateMetadata: {
+      ...props,
+      // ...user.privateMetadata,
+      subscription_type: "Free",
+    },
+  });
+
+  return c.json({ success: true }, 200);
+});
+
+app.get("/admin", async (c) => {
+  return c.json({ message: "Oh wow you found me" });
 });
 
 export const GET = handle(app);

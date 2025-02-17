@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { getBackgroundRemovalImage } from "@/api/utils/removeBackground";
+import { getBackgroundRemovalImage } from "@/api/helpers/removeBackground";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { toast } from "@/hooks/use-toast";
 

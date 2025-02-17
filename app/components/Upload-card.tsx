@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
-  handleBackgroundRemoval,
   uploadImageToS3,
-} from "@/api/utils/removeBackground";
+  validateSubscription,
+} from "@/api/helpers/removeBackground";
 import { LoadingSpinner } from "./ui/loading-spinner";
-import Cookies from "js-cookie";
 import { useToast } from "@/hooks/use-toast";
+import { ClerkFetchUser } from "@/api/helpers/clerk-fetch-user";
+import { setApiUsageCookie } from "@/api/helpers/cookies-helper";
 
 export function UploadCard() {
   const [isDragging, setIsDragging] = useState(false);
@@ -24,23 +25,8 @@ export function UploadCard() {
   const [assignUrlLink, setAssignUrlLink] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
-  const MAX_API_USAGE = 5; // Limit before requiring signup
+  // Limit before requiring signup
 
-  const setApiUsageCookie = () => {
-    let currentUsage = parseInt(Cookies.get("api_usage") || "0", 10);
-
-    if (currentUsage >= MAX_API_USAGE) {
-      alert("API limit reached. Please sign up and create an account.");
-      return false; // Prevent API call
-    }
-
-    Cookies.set("api_usage", (currentUsage + 1).toString(), {
-      expires: 30, // 30 days
-      path: "/",
-    });
-
-    return true; // Allow API call
-  };
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -72,24 +58,36 @@ export function UploadCard() {
   };
 
   const getBackgroundRemoval = useCallback(async () => {
+    const { userId } = await ClerkFetchUser();
     if (!preview) {
-      console.error("No file selected");
+      toast({ description: "No file selected" });
       return;
     }
-    if (!setApiUsageCookie()) return; // ✅ Stop if limit reached
+
+    if (!userId) {
+      if (!setApiUsageCookie()) return; // ✅ Stop if limit reached
+    }
     // / ✅ Sets the cookie
 
-    setLoadingButton(true);
     try {
+      setLoadingButton(true);
       const uploadImageToAWS = await uploadImageToS3(preview, fileName);
 
-      const processedImage = await handleBackgroundRemoval({
+      const processedImage = await validateSubscription({
         preview,
         fileName,
         assignUrlLink: fileName ? uploadImageToAWS : assignUrlLink,
       });
 
-      if (processedImage) {
+      if (processedImage?.error) {
+        setLoadingButton(false);
+        toast({
+          title: "API limit reached",
+          description:
+            "Please wait for next next month for your usage to reset. or proceed to purchase Pro tier",
+        });
+      }
+      if (!processedImage.error) {
         router.push(`/remove-background/${processedImage}`);
       }
     } catch (error) {

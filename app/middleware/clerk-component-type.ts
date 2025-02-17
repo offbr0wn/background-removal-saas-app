@@ -9,5 +9,10 @@ export const SignedInComponent = SignedIn as unknown as React.FC<{
 
 export const ClerkProviderComponent = ClerkProvider as unknown as React.FC<{
   children: React.ReactNode;
- 
 }>;
+
+export type RemoveBackgroundProps = {
+  preview: string | null;
+  fileName: string | null;
+  assignUrlLink: string;
+};
