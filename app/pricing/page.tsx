@@ -1,20 +1,26 @@
+"use client";
+
 import { Layout } from "@/components/layout-page";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ClerkFetchUser } from "@/api/helpers/clerk-fetch-user";
 
 export default function PricingPage() {
-  const { user } = useUser();
-  console.log(user?.id);
-
-  const hideButton = (plan: string) => {
-    if (user?.id) {
-      return plan === "Free" ? true : false;
+  const [currentTier, setCurrentTier] = useState<string>("Free");
+  useEffect(() => {
+    async function fetchTier() {
+      const { privateMetadata } = await ClerkFetchUser();
+      // Assume the subscription type is stored in privateMetadata.subscription_type
+      const subscriptionType = privateMetadata?.subscription_type as string;
+      setCurrentTier(subscriptionType);
     }
-  };
+    fetchTier();
+  }, []);
+
   const plans = [
     {
       name: "Basic",
@@ -89,17 +95,17 @@ export default function PricingPage() {
               initial={{
                 opacity: 0,
                 y: 20,
-                scale: hideButton(plan?.price) ? 1.05 : 0.95,
+                scale: currentTier === plan?.price ? 1.05 : 0.95,
               }}
               animate={{
                 opacity: 1,
                 y: 0,
-                scale: hideButton(plan?.price) ? 1.05 : 0.95,
+                scale: currentTier === plan?.price ? 1.05 : 0.95,
               }}
               transition={{
                 duration: 0.5,
                 delay: index * 0.1,
-                scale: hideButton(plan?.price) ? 1.05 : 0.95,
+                scale: currentTier === plan?.price ? 1.05 : 0.95,
               }}
               whileHover={{
                 scale: 1.05,
@@ -140,9 +146,9 @@ export default function PricingPage() {
                     : "bg-white/10 hover:bg-white/20 text-white"
                 }`}
                 // onClick={retrievePlan}
-                disabled={hideButton(plan?.price)}
+                disabled={currentTier === plan?.price}
               >
-                {hideButton(plan?.price) ? "Current Tier" : plan.cta}
+                {currentTier === plan?.price ? "Current Tier" : plan.cta}
               </Button>
             </motion.div>
           ))}
