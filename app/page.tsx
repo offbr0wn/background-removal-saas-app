@@ -7,12 +7,15 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner"; // Corrected import path
 import { NavigationBar } from "@/components/Navigaion-bar";
 import { UploadCard } from "@/components/Upload-card";
-import { useToast } from "./hooks/use-toast";
 import { Toaster } from "./components/ui/toaster";
+
+import {
+  ClerkAddMetaData,
+  ClerkFetchUser,
+} from "./api/helpers/clerk-fetch-user";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     // Simulate any initial loading
@@ -20,6 +23,20 @@ export default function Home() {
       setIsLoading(false);
     }, 200);
 
+    const fetchClerkUsers = async () => {
+      const usersFetches = await ClerkFetchUser();
+
+      if (
+        usersFetches.userId &&
+        !usersFetches.privateMetadata?.subscription_type
+      ) {
+        await ClerkAddMetaData({
+          created_account_timestamp: new Date().toISOString(),
+        });
+      }
+    };
+
+    fetchClerkUsers();
     return () => clearTimeout(timer);
   }, []);
 
