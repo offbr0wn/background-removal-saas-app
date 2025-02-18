@@ -13,8 +13,28 @@ import {
   ClerkAddMetaData,
   ClerkFetchUser,
 } from "./api/helpers/clerk-fetch-user";
+import { TypewriterEffect } from "./components/ui/typewriter-effect";
 
 export default function Home() {
+  const [highlightUpload, setHighlightUpload] = useState(false)
+
+  const words = [
+    {
+      text: "with ",
+      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
+
+     
+    },
+    {
+      text: "AI ",
+      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
+
+    },
+    {
+      text: "precision",
+      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
+    },
+  ];
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +60,13 @@ export default function Home() {
     fetchClerkUsers();
     return () => clearTimeout(timer);
   }, []);
+
+
+  const handleStartFree = () => {
+    setHighlightUpload(true)
+    // Reset the highlight after some time
+    setTimeout(() => setHighlightUpload(false), 2000)
+  }
 
   if (isLoading) {
     return (
@@ -118,7 +145,7 @@ export default function Home() {
                 variants={item}
                 className="text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight"
               >
-                Remove backgrounds with AI precision
+                Remove backgrounds <span className="flex"><TypewriterEffect words={words} /></span>
               </motion.h1>
 
               <motion.p
@@ -133,6 +160,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   className="bg-white hover:bg-white/90 text-black rounded-full px-8"
+                  onClick={handleStartFree}
                 >
                   Start for free
                 </Button>
@@ -157,7 +185,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <UploadCard />
+              <UploadCard highlight={highlightUpload}/>
             </motion.div>
           </div>
         </main>
