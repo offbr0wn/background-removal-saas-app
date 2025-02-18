@@ -142,7 +142,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         });
       }
     },
-    [urlInput]
+    [urlInput, preview]
   );
 
   const highlightVariants = {
@@ -169,7 +169,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
       className="w-full  relative"
       animate={highlight ? { scale: 1.1 } : "initial"}
       variants={highlightVariants}
-      whileHover={{ scale: 1.01 }}
+      whileHover={{ scale: 1 }}
       transition={{ type: "spring", stiffness: 400, damping: 8 }}
     >
       <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
@@ -205,17 +205,20 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
                 alt="File Preview"
                 className=" max-h-80 max-w-full rounded-2xl"
               />
-              <motion.button
-                className="absolute top-35 right-12 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-colors"
-                onClick={() => setPreview(null)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                whileHover={{ scale: 1.4 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <X className="h-4 w-4" />
-              </motion.button>
+
+              {!loadingButton ? (
+                <motion.button
+                  className="absolute top-35 right-12 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-colors"
+                  onClick={() => setPreview(null)}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  whileHover={{ scale: 1.4 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <X className="h-4 w-4" />
+                </motion.button>
+              ) : null}
             </div>
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-4">
@@ -257,7 +260,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
             <div className="flex items-center gap-4 text-sm text-white/50">
               <div className="flex items-center gap-1">
                 <FileType className="h-4 w-4" />
-                <span>PNG, JPG, WEBP</span>
+                <span>PNG, JPG, WEBP, AVIF</span>
               </div>
               <div className="flex items-center gap-1 cursor-pointer">
                 <Link className="h-4 w-4" />
@@ -279,7 +282,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
               />
               <Button
                 type="submit"
-                className="bg-white hover:bg-white/90 text-black"
+                className="bg-white hover:bg-white/30 text-black hover:text-white "
               >
                 {loadingButton ? <LoadingSpinner /> : "Load"}
               </Button>
@@ -296,10 +299,10 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         ) : (
           <Button
             variant="ghost"
-            className="mt-4 text-white hover:text-white hover:bg-white/10 cursor-pointer  font-bold font-2xl w-full animate-wiggle duration-2000 transition-discrete border-dashed border-3 border-white/20"
+            className="mt-4 text-black hover:text-white bg-white hover:bg-white/30 cursor-pointer  font-bold font-2xl w-full  duration-1000 transition-discrete border-dashed border-3 border-white/40"
             onClick={() => setIsUrlInputVisible(true)}
           >
-            <Link className="mr-2 h-4 w-4" />
+            <Link className="mr-2 h-4 w-4  hover:bg-white" />
             Paste Image URL here
           </Button>
         )}

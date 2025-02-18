@@ -45,7 +45,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
       toast({
         duration: 2000,
         description: "Image downloaded successfully",
-      })
+      });
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -54,17 +54,9 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
   }, [processedImage]);
 
   return (
-    <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8 w-[45vw]  ">
+    <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8 sm:w-full md:w-[50vw] ">
       <h2 className="text-6xl font-bold text-white mb-4">Result</h2>
       <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
-        {/* <img
-          src={
-            uploadedImage ||
-            "https://archive.org/download/placeholder-image/placeholder-image.jpg"
-          }
-          alt="Original"
-          className="absolute top-0 left-0 w-full h-full object-cover"
-        /> */}
         {processedImage && (
           <div
             className="absolute top-0 left-0 h-full overflow-hidden"
@@ -73,7 +65,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
             <img
               src={processedImage || "/placeholder.svg"}
               alt="Processed"
-              className="absolute top-0 left-0 w-full h- object-cover"
+              className="absolute top-0 left-0 w-full h-full object-cover"
             />
           </div>
         )}

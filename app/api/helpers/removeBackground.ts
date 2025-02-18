@@ -5,6 +5,7 @@ import {
 } from "@/api/helpers/clerk-fetch-user";
 import { RemoveBackgroundProps } from "@/middleware/clerk-component-type";
 import { resetUsageIfNeeded } from "../utils/subscriptionUtils";
+import { permanentRedirect } from "next/navigation";
 
 export const handleBackgroundRemoval = async ({
   preview,
@@ -28,7 +29,8 @@ export const handleBackgroundRemoval = async ({
 
   const data = await res.json();
 
-  if (!data?.imagePathDownload?.data?.id) throw new Error("Processing failed");
+  if (!data?.imagePathDownload?.data?.id) return { error: "No Image Id Found" };
+
   return data?.imagePathDownload?.data?.id;
 
   // Fetch
@@ -78,6 +80,9 @@ export const validateSubscription = async ({
       assignUrlLink,
     });
 
+    if (processedImage?.error) {
+      permanentRedirect("/");
+    }
     return processedImage;
   }
 

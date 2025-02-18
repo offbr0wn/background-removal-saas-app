@@ -60,10 +60,10 @@ function Page({ params }: { params: { slug: number } }) {
             </Button>
           </Link>
 
-          <div className="grid md:grid-rows-1 gap-2 justify-center items-center">
-            <h1 className="text-4xl font-bold text-white mb-8">
+          <div className="flex flex-col  gap-2 justify-center items-center w-auto pt-10">
+            {/* <h1 className="text-4xl font-bold text-white mb-8">
               Remove Image Background
-            </h1>
+            </h1> */}
             <div>
               {backgroundRemovalLink ? (
                 <ProcessedImage processedImage={backgroundRemovalLink} />
