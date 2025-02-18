@@ -80,9 +80,9 @@ export const validateSubscription = async ({
       assignUrlLink,
     });
 
-    if (processedImage?.error) {
-      permanentRedirect("/");
-    }
+    // if (processedImage?.error) {
+    //   permanentRedirect("/");
+    // }
     return processedImage;
   }
 
