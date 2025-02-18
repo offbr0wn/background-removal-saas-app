@@ -57,11 +57,22 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
   };
 
   const handleFileChange = (file: File) => {
+    const MAX_FILE_SIZE = 4.5 * 1024 * 1024; // 4.5 MB in bytes
+    if (file.size > MAX_FILE_SIZE) {
+      toast({
+        duration: 2000,
+        variant: "destructive",
+        title: "File size limit exceeded",
+        description: "Upload another file less than 4.5MB",
+      });
+      return;
+    }
     const reader = new FileReader();
 
     reader.onloadend = () => {
       setPreview(reader.result as string);
     };
+
     setFileName(file.name); // Set the file name
     reader.readAsDataURL(file);
   };
@@ -275,10 +286,10 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
             <div className="flex items-center gap-2 dark">
               <Input
                 type="url"
-                placeholder="Paste Your Image URL To Download"
+                placeholder="Paste Your Image URL To Download Here"
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
-                className="flex-grow bg-white/20 text-white border-transparent focus-visible:border-transparent focus-visible:ring-0 "
+                className="flex-grow bg-white/20 text-white border-transparent focus-visible:border-transparent focus-visible:ring-0 placeholder-white "
               />
               <Button
                 type="submit"

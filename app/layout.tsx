@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <ClerkProviderComponent>
+      <ClerkProviderComponent afterSignOutUrl="/">
         <body>
           {children}
           <Analytics />
