@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Upload, FileType, Link, Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -13,19 +13,28 @@ import { LoadingSpinner } from "./ui/loading-spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ClerkFetchUser } from "@/api/helpers/clerk-fetch-user";
 import { setApiUsageCookie } from "@/api/helpers/cookies-helper";
+import { motion } from "framer-motion";
 
-export function UploadCard() {
+export function UploadCard({ highlight }: { highlight: boolean }) {
   const [isDragging, setIsDragging] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const { toast } = useToast();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const [isUrlInputVisible, setIsUrlInputVisible] = useState(false);
   const [urlInput, setUrlInput] = useState<string>("");
   const [assignUrlLink, setAssignUrlLink] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
+
   // Limit before requiring signup
+
+  useEffect(() => {
+    if (highlight && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlight]);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -59,6 +68,7 @@ export function UploadCard() {
 
   const getBackgroundRemoval = useCallback(async () => {
     const { userId } = await ClerkFetchUser();
+
     if (!preview) {
       toast({ description: "No file selected" });
       return;
@@ -102,6 +112,7 @@ export function UploadCard() {
       if (!urlInput) return;
 
       try {
+        setLoadingButton(true);
         const response = await fetch(urlInput);
 
         if (!response.ok) throw new Error("Failed to fetch image");
@@ -115,6 +126,7 @@ export function UploadCard() {
           setAssignUrlLink(response?.url);
         };
         reader.readAsDataURL(blob);
+        setLoadingButton(false);
         setUrlInput("");
         setIsUrlInputVisible(false);
         toast({
@@ -122,17 +134,44 @@ export function UploadCard() {
         });
       } catch (error) {
         console.error("Error loading image:", error);
-
         toast({
+          duration: 2000,
           variant: "destructive",
-          description: error?.toString(),
+          title: "Image not loaded successfully",
+          description: "Try another link or upload an image",
         });
       }
     },
     [urlInput]
   );
+
+  const highlightVariants = {
+    initial: { boxShadow: "0 0 0 0 rgba(59, 130, 246, 0)" },
+    highlight: {
+      boxShadow: [
+        "0 0 0 0 rgba(59, 130, 246, 0)",
+        "0 0 0 15px rgba(59, 130, 246, 0.3)",
+        "0 0 0 0 rgba(59, 130, 246, 0)",
+      ],
+
+      transition: {
+        duration: 1.5,
+        repeat: 3,
+        ease: "easeInOut",
+      },
+    },
+  };
+
   return (
-    <div className="w-full max-w-lg">
+    // <BackgroundGradient className="bg-black rounded-2xl w-full p-2  ">
+    <motion.div
+      ref={cardRef}
+      className="w-full  relative"
+      animate={highlight ? { scale: 1.1 } : "initial"}
+      variants={highlightVariants}
+      whileHover={{ scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 400, damping: 8 }}
+    >
       <div className="bg-black/20 backdrop-blur-xl rounded-3xl p-8">
         <h2 className="text-2xl font-semibold text-white mb-2">
           Upload your image
@@ -160,8 +199,23 @@ export function UploadCard() {
           `}
         >
           {preview ? (
-            <div className="max-w-70 max-h-96 rounded-2xl bg-white/10 flex items-center justify-center mb-5  transition-all duration-400">
-              <img src={preview} alt="File Preview" />
+            <div className="max-w-70 max-h-96 rounded-2xl bg-white/10 flex items-center justify-center mb-5  transition-all duration-500">
+              <img
+                src={preview}
+                alt="File Preview"
+                className=" max-h-80 max-w-full rounded-2xl"
+              />
+              <motion.button
+                className="absolute top-35 right-12 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white/70 hover:text-white hover:bg-black/70 transition-colors"
+                onClick={() => setPreview(null)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                whileHover={{ scale: 1.4 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X className="h-4 w-4" />
+              </motion.button>
             </div>
           ) : (
             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-4">
@@ -169,14 +223,14 @@ export function UploadCard() {
             </div>
           )}
           {/* Logic for upload button shows button when no image is uploaded */}
-          {!(fileName || preview) && (
+          {!preview && (
             <Button
               variant="secondary"
               className="bg-white hover:bg-white/90 text-black border-0 mb-4 relative"
               asChild
             >
               <label htmlFor="file-upload" className="cursor-pointer">
-                {fileName || preview ? fileName : "Upload File"}
+                {preview ? fileName : "Upload File"}
               </label>
             </Button>
           )}
@@ -191,7 +245,7 @@ export function UploadCard() {
             }}
           />
           {/* Will show image preview once image is uploaded/pasted */}
-          {fileName || preview ? (
+          {preview ? (
             <Button
               className="bg-blue-900 hover:bg-blue-700 text-white  transition-all duration-200 cursor-pointer mt-5 p-6 font-bold text-md"
               onClick={getBackgroundRemoval}
@@ -215,19 +269,19 @@ export function UploadCard() {
         {/* URL inout field to paste a URL for image  */}
         {isUrlInputVisible ? (
           <form onSubmit={handleUrlSubmit} className="mt-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 dark">
               <Input
                 type="url"
-                placeholder="https://example.com/image.jpg"
+                placeholder="Paste Your Image URL To Download"
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
-                className="flex-grow bg-white/10 text-white border-transparent"
+                className="flex-grow bg-white/20 text-white border-transparent focus-visible:border-transparent focus-visible:ring-0 "
               />
               <Button
                 type="submit"
                 className="bg-white hover:bg-white/90 text-black"
               >
-                Load
+                {loadingButton ? <LoadingSpinner /> : "Load"}
               </Button>
               <Button
                 type="button"
@@ -242,11 +296,11 @@ export function UploadCard() {
         ) : (
           <Button
             variant="ghost"
-            className="mt-4 text-white/70 hover:text-white hover:bg-white/10 cursor-pointer"
+            className="mt-4 text-white hover:text-white hover:bg-white/10 cursor-pointer  font-bold font-2xl w-full animate-wiggle duration-2000 transition-discrete border-dashed border-3 border-white/20"
             onClick={() => setIsUrlInputVisible(true)}
           >
             <Link className="mr-2 h-4 w-4" />
-            Paste image URL
+            Paste Image URL here
           </Button>
         )}
 
@@ -266,6 +320,6 @@ export function UploadCard() {
           </Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
