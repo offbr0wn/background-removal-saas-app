@@ -53,6 +53,7 @@ export default function Home() {
         await ClerkAddMetaData({
           created_account_timestamp: new Date().toISOString(),
           api_call_count: 0,
+          subscription_type: "Free",
         });
       }
     };

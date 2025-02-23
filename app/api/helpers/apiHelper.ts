@@ -36,10 +36,16 @@ export async function postImage(image_url: string) {
         remove: true,
         color: "transparent",
       },
+      resizing: {
+        width: "50%",
+        height: "50%",
+        fit: "bounds",
+      },
     },
     output: {
       format: {
         type: "png",
+
         compression: "fast",
       },
     },

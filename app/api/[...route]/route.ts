@@ -23,7 +23,6 @@ app.post("/background-removal", async (c) => {
     }
 
     const imagePathDownload = await postImage(image_url);
-
     return c.json({ imagePathDownload });
   } catch (error) {
     return c.json({ error: error }, error || 500);
@@ -117,12 +116,17 @@ app.post("/created-free-user", async (c) => {
     privateMetadata: {
       ...props,
       // ...user.privateMetadata,
-      subscription_type: "Free",
+      // subscription_type: "Free",
     },
   });
 
   return c.json({ success: true }, 200);
 });
+
+
+// app.post("/create-stripe-checkout", async (c) => { 
+
+// })
 
 app.get("/admin", async (c) => {
   return c.json({ message: "Oh wow you found me" });

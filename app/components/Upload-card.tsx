@@ -103,9 +103,10 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
       if (processedImage?.error) {
         setLoadingButton(false);
         toast({
+          duration: 2000,
           title: "API limit reached",
           description:
-            "Please wait for next next month for your usage to reset. or proceed to purchase Pro tier",
+            `Please wait for next next month for your usage to reset. or proceed to purchase Pro tier, ${processedImage.error}`,
         });
       }
       if (!processedImage.error) {

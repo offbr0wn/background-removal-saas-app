@@ -73,21 +73,36 @@ export const validateSubscription = async ({
           "Free API limit reached. Please wait until your monthly limit resets or upgrade to Pro.",
       };
     }
-    await ClerkAddMetaData({ api_call_count: apiCallCount + 1 });
     const processedImage = await handleBackgroundRemoval({
       preview,
       fileName,
       assignUrlLink,
     });
+    if (!processedImage?.error) {
+      await ClerkAddMetaData({ api_call_count: apiCallCount + 1 });
+    }
 
-    // if (processedImage?.error) {
-    //   permanentRedirect("/");
-    // }
     return processedImage;
   }
 
   if (user?.id && privateMetadata?.subscription_type === "Pro") {
-    return;
+
+    if (apiCallCount >= 100) {
+      return {
+        error:
+          "Pro API limit reached. Please wait until your monthly limit resets or upgrade to Pro.",
+      };
+    }
+
+    const processedImage = await handleBackgroundRemoval({
+      preview,
+      fileName,
+      assignUrlLink,
+    });
+    if (!processedImage?.error) {
+      await ClerkAddMetaData({ api_call_count: apiCallCount + 1 });
+    }
+    return processedImage
   }
 };
 
