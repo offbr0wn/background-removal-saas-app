@@ -150,7 +150,7 @@ export default function PricingPage() {
       toast({
         title: "Coming Soon",
         description: "This feature is coming soon!",
-        variant: "default",        
+        variant: "default",
       });
     }
   };

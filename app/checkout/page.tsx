@@ -11,6 +11,8 @@ import { retrieveStripeSession } from "@/api/helpers/stripe-actions";
 import dayjs from "dayjs";
 import { ConfettiCanvas } from "@/components/ui/confetti-canvas";
 
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
 export default function SuccessPage() {
   const { session } = useClerk();
   const searchParams = useSearchParams();
@@ -35,6 +37,15 @@ export default function SuccessPage() {
 
     setOrderNumber(Math.floor(100000 + Math.random() * 900000).toString());
   }, [session, sessionId]);
+
+  if (!sessionData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#06b6d4] via-[#3b82f6] to-[#1d4ed8] flex flex-col items-center justify-center p-4">
+        <ConfettiCanvas />
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#06b6d4] via-[#3b82f6] to-[#1d4ed8] flex flex-col items-center justify-center p-4">
