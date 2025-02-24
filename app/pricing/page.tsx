@@ -115,6 +115,9 @@ export default function PricingPage() {
     }
 
     if (e.target.name === "Pro") {
+      if (!userId) {
+        router.push("/sign-up");
+      }
       try {
         const stripe = await stripePromise;
 
