@@ -18,12 +18,17 @@ export const handleBackgroundRemoval = async ({
   }
 
   // If user doesnt excist fetch
+  const { userId, privateMetadata } = await ClerkFetchUser();
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/background-removal`,
     {
       method: "POST",
-      body: JSON.stringify({ image_url: assignUrlLink }),
+      body: JSON.stringify({
+        image_url: assignUrlLink,
+        userId,
+        privateMetadata,
+      }),
     }
   );
 
@@ -32,18 +37,6 @@ export const handleBackgroundRemoval = async ({
   if (!data?.imagePathDownload?.data?.id) return { error: "No Image Id Found" };
 
   return data?.imagePathDownload?.data?.id;
-
-  // Fetch
-  // const response = await fetch(preview);
-  // const blob = await response.blob();
-  // const file = new File([blob], fileName || "uploaded-image.png", {
-  //   type: blob.type,
-  // });
-
-  // const formData = new FormData();
-  // formData.append("file", file);
-
-  // return { data: "Limit reached" };
 };
 
 export const validateSubscription = async ({
@@ -86,7 +79,6 @@ export const validateSubscription = async ({
   }
 
   if (user?.id && privateMetadata?.subscription_type === "Pro") {
-
     if (apiCallCount >= 100) {
       return {
         error:
@@ -102,7 +94,7 @@ export const validateSubscription = async ({
     if (!processedImage?.error) {
       await ClerkAddMetaData({ api_call_count: apiCallCount + 1 });
     }
-    return processedImage
+    return processedImage;
   }
 };
 

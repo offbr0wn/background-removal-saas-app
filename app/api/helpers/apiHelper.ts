@@ -28,7 +28,25 @@ export async function apiRequest<T>(
  * Function to send an image for background removal.
 
  */
-export async function postImage(image_url: string) {
+export async function postImage(
+  image_url: string,
+  userId: string,
+  privateMetadata: any
+) {
+  const setUserImageQuality = () => {
+    if (!userId) {
+      return "30%";
+    }
+
+    if (userId && privateMetadata?.subscription_type === "Free") {
+      return "50%";
+    }
+
+    if (userId && privateMetadata?.subscription_type === "Pro") {
+      return "100%";
+    }
+  };
+
   return apiRequest<{ imagePathDownload: string }>("", "POST", {
     input: image_url,
     operations: {
@@ -37,15 +55,14 @@ export async function postImage(image_url: string) {
         color: "transparent",
       },
       resizing: {
-        width: "50%",
-        height: "50%",
+        width: setUserImageQuality(),
+        height: setUserImageQuality(),
         fit: "bounds",
       },
     },
     output: {
       format: {
         type: "png",
-
         compression: "fast",
       },
     },

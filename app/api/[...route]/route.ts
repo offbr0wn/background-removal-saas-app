@@ -22,12 +22,12 @@ app.use("/api/*", authMiddleware);
 
 app.post("/background-removal", async (c) => {
   try {
-    const { image_url } = await c.req.json();
+    const { image_url, userId, privateMetadata } = await c.req.json();
     if (!image_url) {
       throw new HTTPException(401, { message: "No image found" });
     }
 
-    const imagePathDownload = await postImage(image_url);
+    const imagePathDownload = await postImage(image_url, userId, privateMetadata);
     return c.json({ imagePathDownload });
   } catch (error) {
     return c.json({ error: error }, error || 500);
