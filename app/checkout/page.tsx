@@ -27,6 +27,7 @@ export default function SuccessPage() {
     retrieveStripeSession(sessionId).then(({ success, error, sessionData }) => {
       if (success) {
         setSessionData(sessionData);
+        console.log(sessionData);
         session?.reload();
       }
 
