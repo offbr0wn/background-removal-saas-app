@@ -22,7 +22,13 @@ app.use(
   "*",
   cors({
     origin: "*", // Allow all origins
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Methods",
+      "Access-Control-Allow-Headers",
+    ],
     allowMethods: ["GET", "POST", "OPTIONS"],
     credentials: false, // Credentials must be false when using "*"
   })
@@ -156,7 +162,6 @@ app.post("/create-stripe-checkout", async (c) => {
 
     return c.json({ sessionId: session.id, sessionError: null });
   } catch (error) {
-    console.log(error);
     return c.json({ sessionId: null, sessionError: error });
   }
 });
