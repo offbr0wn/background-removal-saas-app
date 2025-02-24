@@ -29,7 +29,7 @@ app.use(
       "Access-Control-Allow-Methods",
       "Access-Control-Allow-Headers",
     ],
-    allowMethods: ["GET", "POST", "OPTIONS"],
+
     credentials: true, // Credentials must be false when using "*"
   })
 );
@@ -162,7 +162,7 @@ app.post("/create-stripe-checkout", async (c) => {
 
     return c.json({ sessionId: session.id, sessionError: null });
   } catch (error) {
-    return c.json({ sessionId: null, sessionError: error });
+    return c.json({ sessionId: null, sessionError: error }, 500);
   }
 });
 
