@@ -3,7 +3,7 @@ import { ClerkAddMetaData, ClerkFetchUser } from "./clerk-fetch-user";
 
 import { LineItem } from "@/middleware/clerk-component-type";
 
-export async function CreateStripeCheckout(lineItems: LineItem[]) {
+export async function CreateStripeCheckout() {
   const { userId, user } = await ClerkFetchUser();
 
   const response = await fetch(
@@ -13,7 +13,7 @@ export async function CreateStripeCheckout(lineItems: LineItem[]) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ lineItems, user, userId }),
+      body: JSON.stringify({user, userId }),
     }
   );
 
