@@ -30,7 +30,7 @@ app.use(
       "Access-Control-Allow-Headers",
     ],
     allowMethods: ["GET", "POST", "OPTIONS"],
-    credentials: false, // Credentials must be false when using "*"
+    credentials: true, // Credentials must be false when using "*"
   })
 );
 
