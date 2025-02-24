@@ -20,10 +20,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 app.use(
   "*",
   cors({
-    origin: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
+    origin: "*", // Allow all origins
     allowHeaders: ["Content-Type", "Authorization"],
-    allowMethods: ["POST", "GET", "OPTIONS"],
-    credentials: true,
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    credentials: false, // Credentials are not allowed when using '*'
   })
 );
 app.use("/api/*", authMiddleware);
