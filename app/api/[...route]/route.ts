@@ -9,7 +9,7 @@ import { authMiddleware } from "@/middleware/auth";
 
 import { clerkClient } from "@clerk/nextjs/server";
 import Stripe from "stripe";
-import { LineItem } from "../../middleware/clerk-component-type";
+import { cors } from "hono/cors";
 import { ClerkAddMetaData } from "../helpers/clerk-fetch-user";
 import dayjs from "dayjs";
 
@@ -17,7 +17,18 @@ export const runtime = "nodejs";
 
 const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-
+app.use(
+  "/api/*",
+  cors({
+    origin: "*",
+    allowHeaders: [
+      "Access-Control-Allow-Headers",
+      "Access-Control-Allow-Origin",
+    ],
+    allowMethods: ["POST", "GET"],
+    credentials: true,
+  })
+);
 app.use("/api/*", authMiddleware);
 
 app.post("/background-removal", async (c) => {
@@ -27,7 +38,11 @@ app.post("/background-removal", async (c) => {
       throw new HTTPException(401, { message: "No image found" });
     }
 
-    const imagePathDownload = await postImage(image_url, userId, privateMetadata);
+    const imagePathDownload = await postImage(
+      image_url,
+      userId,
+      privateMetadata
+    );
     return c.json({ imagePathDownload });
   } catch (error) {
     return c.json({ error: error }, error || 500);
