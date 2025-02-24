@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type React from "react"; // Added import for React
 import { NavigationBar } from "@/components/Navigaion-bar";
+import { Toaster } from "./ui/toaster";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,6 +10,8 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#07c2cc] via-[#0061ff] to-[#000B24]">
+            <Toaster />
+
       <div className="relative min-h-screen flex flex-col">
         <header className="relative z-10">
           <div className="max-w-7xl mx-auto px-6 py-4">
