@@ -123,7 +123,7 @@ export default function PricingPage() {
 
         const lineItems = [
           {
-            price: "price_1Quut1FhXFCC2y3Q0W3qduLP",
+            price: "prod_RppBJOsWavVdzc",
             quantity: 1,
           },
         ];
