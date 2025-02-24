@@ -22,15 +22,9 @@ app.use(
   "/api/*",
   cors({
     origin: "https://www.background-removal-app.co.uk", // Allow all origins
-    allowHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Access-Control-Allow-Origin",
-      "Access-Control-Allow-Methods",
-      "Access-Control-Allow-Headers",
-    ],
+    allowHeaders: ["Access-Control-Allow-Origin"],
 
-    credentials: true, // Credentials must be false when using "*"
+    credentials: false, // Credentials must be false when using "*"
   })
 );
 
