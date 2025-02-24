@@ -21,7 +21,15 @@ app.use(
   "*",
   cors({
     origin: "*", // Allow all origins
-    // allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: [
+      "X-Custom-Header",
+      "Upgrade-Insecure-Requests",
+      "Content-Type",
+      "Accept",
+      "X-Requested-With",
+      "Set-Cookie",
+      "Access-Control-Allow-Origin",
+    ],
     allowMethods: ["GET", "POST", "OPTIONS"],
     credentials: true, // Credentials are not allowed when using '*'
   })
