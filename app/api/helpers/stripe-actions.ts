@@ -14,6 +14,7 @@ export async function CreateStripeCheckout(lineItems: LineItem[]) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({ lineItems, user, userId }),
     }
@@ -32,6 +33,7 @@ export async function retrieveStripeSession(sessionId: string) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({ sessionId, userId, privateMetadata }),
     }
@@ -51,6 +53,7 @@ export async function cancelStripeSubscription() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({ userId, privateMetadata }),
     }
