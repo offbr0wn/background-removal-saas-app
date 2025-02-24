@@ -121,7 +121,16 @@ export default function PricingPage() {
       try {
         const stripe = await stripePromise;
 
-        const { sessionId, sessionError } = await CreateStripeCheckout();
+        const lineItems = [
+          {
+            price: "price_1Quut1FhXFCC2y3Q0W3qduLP",
+            quantity: 1,
+          },
+        ];
+
+        const { sessionId, sessionError } = await CreateStripeCheckout(
+          lineItems
+        );
 
         if (!sessionId || sessionError) {
           toast({

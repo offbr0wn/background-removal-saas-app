@@ -146,14 +146,7 @@ app.post("/created-free-user", async (c) => {
 });
 
 app.post("/create-stripe-checkout", async (c) => {
-  const { user, userId } = await c.req.json();
-
-  const lineItems = [
-    {
-      price: "price_1Quut1FhXFCC2y3Q0W3qduLP",
-      quantity: 1,
-    },
-  ];
+  const { lineItems, user, userId } = await c.req.json();
   try {
     if (!userId) {
       return c.json({ sessionId: null, sessionError: "User not found" });
