@@ -21,9 +21,9 @@ app.use(
   "*",
   cors({
     origin: "*", // Allow all origins
-    allowHeaders: ["Content-Type", "Authorization"],
+    // allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["GET", "POST", "OPTIONS"],
-    credentials: false, // Credentials are not allowed when using '*'
+    credentials: true, // Credentials are not allowed when using '*'
   })
 );
 app.use("/api/*", authMiddleware);
