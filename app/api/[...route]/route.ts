@@ -18,6 +18,16 @@ export const runtime = "nodejs";
 const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
+app.use(
+  "*",
+  cors({
+    origin: "*", // Allow all origins
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    credentials: false, // Credentials must be false when using "*"
+  })
+);
+
 app.use("/api/*", authMiddleware);
 
 app.post("/background-removal", async (c) => {
