@@ -99,6 +99,13 @@ export default function PricingPage() {
     if (e.target.name === "Free") {
       if (!userId) {
         router.push("/sign-up");
+      } else {
+        toast({
+          title: "Success",
+          description:
+            "You are already on the Paid plan. You can cancel your subscription to switch to the Free plan.",
+          variant: "default",
+        });
       }
 
       // await ClerkAddMetaData({
@@ -122,7 +129,6 @@ export default function PricingPage() {
           lineItems
         );
 
-       
         if (!sessionId || sessionError) {
           toast({
             title: "Error",
