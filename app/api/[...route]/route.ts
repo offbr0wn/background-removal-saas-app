@@ -141,20 +141,24 @@ app.post("/created-free-user", async (c) => {
 
 app.post("/create-stripe-checkout", async (c) => {
   const { lineItems, user, userId } = await c.req.json();
+  try {
+    if (!userId) {
+      return c.json({ sessionId: null, sessionError: "User not found" });
+    }
 
-  if (!userId) {
-    return c.json({ sessionId: null, sessionError: "User not found" });
+    const session = await stripe.checkout.sessions.create({
+      line_items: lineItems,
+      mode: "subscription",
+      success_url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
+      customer_email: user?.email,
+    });
+
+    return c.json({ sessionId: session.id, sessionError: null });
+  } catch (error) {
+    console.log(error);
+    return c.json({ sessionId: null, sessionError: error });
   }
-
-  const session = await stripe.checkout.sessions.create({
-    line_items: lineItems,
-    mode: "subscription",
-    success_url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
-    customer_email: user?.email,
-  });
-
-  return c.json({ sessionId: session.id, sessionError: null });
 });
 
 app.post("/retrieve-stripe-session", async (c) => {
