@@ -18,14 +18,11 @@ export const runtime = "nodejs";
 const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 app.use(
-  "/api/*",
+  "*",
   cors({
-    origin: "*",
-    allowHeaders: [
-      "Access-Control-Allow-Headers",
-      "Access-Control-Allow-Origin",
-    ],
-    allowMethods: ["POST", "GET"],
+    origin: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["POST", "GET", "OPTIONS"],
     credentials: true,
   })
 );
@@ -134,8 +131,6 @@ app.post("/created-free-user", async (c) => {
   await client.users.updateUserMetadata(props.userId, {
     privateMetadata: {
       ...props,
-      // ...user.privateMetadata,
-      // subscription_type: "Free",
     },
   });
 
