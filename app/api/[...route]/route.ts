@@ -18,21 +18,21 @@ export const runtime = "nodejs";
 const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-app.use(
-  "/api/*",
-  cors({
-    origin: "*", // Allow all origins
-    allowHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Access-Control-Allow-Origin",
-      "Access-Control-Allow-Methods",
-      "Access-Control-Allow-Headers",
-    ],
+// app.use(
+//   "/api/*",
+//   cors({
+//     origin: "*", // Allow all origins
+//     allowHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "Access-Control-Allow-Origin",
+//       "Access-Control-Allow-Methods",
+//       "Access-Control-Allow-Headers",
+//     ],
 
-    credentials: true, // Credentials must be false when using "*"
-  })
-);
+//     credentials: true, // Credentials must be false when using "*"
+//   })
+// );
 
 app.use("/api/*", authMiddleware);
 
@@ -147,7 +147,7 @@ app.post("/created-free-user", async (c) => {
 
 app.post("/create-stripe-checkout", async (c) => {
   const { lineItems, user, userId } = await c.req.json();
-  try {
+  // try {
     if (!userId) {
       return c.json({ sessionId: null, sessionError: "User not found" });
     }
@@ -161,9 +161,9 @@ app.post("/create-stripe-checkout", async (c) => {
     });
 
     return c.json({ sessionId: session.id, sessionError: null });
-  } catch (error) {
-    return c.json({ sessionId: null, sessionError: error }, 500);
-  }
+  // } catch (error) {
+  //   return c.json({ sessionId: null, sessionError: error }, 500);
+  // }
 });
 
 app.post("/retrieve-stripe-session", async (c) => {
