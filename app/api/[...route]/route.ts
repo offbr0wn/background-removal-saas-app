@@ -19,9 +19,9 @@ const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 app.use(
-  "*",
+  "/api/*",
   cors({
-    origin: "/api/*", // Allow all origins
+    origin: "*", // Allow all origins
     allowHeaders: [
       "Content-Type",
       "Authorization",
