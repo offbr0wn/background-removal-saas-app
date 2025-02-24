@@ -21,7 +21,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 app.use(
   "*",
   cors({
-    origin: "*", // Allow all origins
+    origin: "/api/*", // Allow all origins
     allowHeaders: [
       "Content-Type",
       "Authorization",
