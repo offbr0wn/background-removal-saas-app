@@ -17,23 +17,23 @@ export const runtime = "nodejs";
 
 const app = new Hono().basePath("/api");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-app.use(
-  "*",
-  cors({
-    origin: "*", // Allow all origins
-    allowHeaders: [
-      "X-Custom-Header",
-      "Upgrade-Insecure-Requests",
-      "Content-Type",
-      "Accept",
-      "X-Requested-With",
-      "Set-Cookie",
-      "Access-Control-Allow-Origin",
-    ],
-    allowMethods: ["GET", "POST", "OPTIONS"],
-    credentials: true, // Credentials are not allowed when using '*'
-  })
-);
+// app.use(
+//   "*",
+//   cors({
+//     origin: "*", // Allow all origins
+//     allowHeaders: [
+//       "X-Custom-Header",
+//       "Upgrade-Insecure-Requests",
+//       "Content-Type",
+//       "Accept",
+//       "X-Requested-With",
+//       "Set-Cookie",
+//       "Access-Control-Allow-Origin",
+//     ],
+//     allowMethods: ["GET", "POST", "OPTIONS"],
+//     credentials: true, // Credentials are not allowed when using '*'
+//   })
+// );
 app.use("/api/*", authMiddleware);
 
 app.post("/background-removal", async (c) => {
