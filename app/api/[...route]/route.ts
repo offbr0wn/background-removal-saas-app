@@ -21,7 +21,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 app.use(
   "/api/*",
   cors({
-    origin: "*", // Allow all origins
+    origin: "https://www.background-removal-app.co.uk", // Allow all origins
     allowHeaders: [
       "Content-Type",
       "Authorization",
