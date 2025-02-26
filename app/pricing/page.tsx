@@ -21,6 +21,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function PricingPage() {
   const { session } = useClerk();
+  const [loading, setLoading] = useState(false);
   const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
   );
@@ -115,6 +116,7 @@ export default function PricingPage() {
     }
 
     if (e.target.name === "Pro") {
+      setLoading(true);
       if (!userId) {
         router.push("/sign-up");
       }
@@ -152,6 +154,7 @@ export default function PricingPage() {
         if (error) {
           throw new Error("Failed to redirect to checkout");
         }
+        if (!error) setLoading(false);
       } catch (error) {
         console.error("Error creating checkout session:", error);
       }
@@ -251,23 +254,28 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-
-                <Button
-                  className={`w-full mb-4 ${
-                    plan.highlighted
-                      ? "bg-blue-500 hover:bg-blue-600 text-white"
-                      : "bg-white/10 hover:bg-white/20 text-white"
-                  }`}
-                  name={plan.name}
-                  onClick={
-                    currentTier === plan?.name
-                      ? undefined
-                      : (e) => handlePlanClick(e)
-                  }
-                  disabled={currentTier === plan?.name}
-                >
-                  {currentTier === plan?.name ? "Current Tier" : plan.cta}
-                </Button>
+                {/* Plan Selection Button */}
+                {(plan.cta === "Go Pro" && loading && index) === 1 ? (
+                  <LoadingSpinner className="self-center" />
+                ) : (
+                  <Button
+                    className={`w-full mb-4 ${
+                      plan.highlighted
+                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                        : "bg-white/10 hover:bg-white/20 text-white"
+                    }`}
+                    name={plan.name}
+                    onClick={
+                      currentTier === plan?.name
+                        ? undefined
+                        : (e) => handlePlanClick(e)
+                    }
+                    disabled={currentTier === plan?.name}
+                  >
+                    {currentTier === plan?.name ? "Current Tier" : plan.cta}
+                  </Button>
+                )}
+                {/* Cancel Subscription Button */}
                 {currentTier === "Pro" && plan.name === "Pro" && (
                   <Button
                     className={`w-full ${
