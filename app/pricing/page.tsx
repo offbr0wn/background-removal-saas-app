@@ -63,15 +63,16 @@ export default function PricingPage() {
     },
     {
       name: "Pro",
-      price: "£10 / month",
+      price: "£2 / month",
       description: "Ideal for professionals and growing businesses",
       features: [
-        { name: "150 images/month", included: true },
+        { name: "200 images/month", included: true },
         { name: "Priority support", included: true },
         { name: "Original output resolution", included: true },
         { name: "Faster processing speed", included: true },
         { name: "4K max resolution", included: true },
         { name: "Compression of images", included: false },
+        { name: "Setting Background Color", included: false },
         // { name: "API access", included: true },
         // { name: "Batch processing", included: true },
       ],
@@ -125,7 +126,7 @@ export default function PricingPage() {
 
         const lineItems = [
           {
-            price: "price_1Qw9XLFhXFCC2y3QQ6UbXZgp",
+            price: "price_1Qx8JZFhXFCC2y3QzA64blqm",
             quantity: 1,
           },
         ];

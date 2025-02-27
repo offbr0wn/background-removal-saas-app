@@ -22,13 +22,13 @@ export function Layout({ children }: LayoutProps) {
         <footer className="bg-black/20 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-6 py-8 flex justify-between items-center">
             <p className="text-white/70">
-              &copy; 2024 RemoveBG. All rights reserved.
+              &copy; 2025 RBRemove. All rights reserved.
             </p>
             <div className="flex gap-4">
-              <Link href="/privacy" className="text-white/70 hover:text-white">
+              <Link href="/" className="text-white/70 hover:text-white">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-white/70 hover:text-white">
+              <Link href="/" className="text-white/70 hover:text-white">
                 Terms of Service
               </Link>
             </div>

@@ -155,7 +155,7 @@ export default function ExamplesPage() {
             their image editing needs.
           </p>
 
-          <Link href="/remove-background#upload">
+          <Link href="/">
             <Button
               size="lg"
               className="bg-white hover:bg-white/90 text-black rounded-full px-8"
