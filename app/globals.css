@@ -95,7 +95,6 @@
   --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
   --animate-wiggle: wiggle  ease-in-out 2s;
 
-
   @keyframes accordion-down {
     from {
       height: 0;
@@ -272,5 +271,4 @@
     @apply bg-background text-foreground;
   }
 }
-
 
