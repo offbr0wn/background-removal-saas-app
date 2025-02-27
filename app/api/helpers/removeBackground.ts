@@ -79,7 +79,7 @@ export const validateSubscription = async ({
   }
 
   if (user?.id && privateMetadata?.subscription_type === "Pro") {
-    if (apiCallCount >= 100) {
+    if (apiCallCount >= 200) {
       return {
         error:
           "Pro API limit reached. Please wait until your monthly limit resets or upgrade to Pro.",
