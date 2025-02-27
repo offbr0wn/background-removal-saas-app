@@ -320,19 +320,19 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         )}
 
         {/* Quick Actions  for later features down the line */}
-        <div className="mt-6 grid grid-cols-2 gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-4">
           <Button
             variant="ghost"
-            className="text-white/70 hover:text-white hover:bg-white/10"
+            className="text-white/70 hover:text-white hover:bg-white/10 "
           >
             Sample images
           </Button>
-          <Button
+          {/* <Button
             variant="ghost"
             className="text-white/70 hover:text-white hover:bg-white/10"
           >
             Bulk upload
-          </Button>
+          </Button> */}
         </div>
       </div>
     </motion.div>

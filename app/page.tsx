@@ -14,25 +14,26 @@ import {
   ClerkFetchUser,
 } from "./api/helpers/clerk-fetch-user";
 import { TypewriterEffect } from "./components/ui/typewriter-effect";
+import { PromoBanner } from "./components/ui/promo-banner";
 
 export default function Home() {
-  const [highlightUpload, setHighlightUpload] = useState(false)
+  const [highlightUpload, setHighlightUpload] = useState(false);
 
   const words = [
     {
       text: "with ",
-      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
-
-     
+      className:
+        "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
     },
     {
       text: "AI ",
-      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
-
+      className:
+        "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
     },
     {
       text: "precision",
-      className: "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
+      className:
+        "text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight",
     },
   ];
   const [isLoading, setIsLoading] = useState(true);
@@ -62,12 +63,11 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-
   const handleStartFree = () => {
-    setHighlightUpload(true)
+    setHighlightUpload(true);
     // Reset the highlight after some time
-    setTimeout(() => setHighlightUpload(false), 2000)
-  }
+    setTimeout(() => setHighlightUpload(false), 2000);
+  };
 
   if (isLoading) {
     return (
@@ -103,7 +103,6 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-[#07c2cc] via-[#0061ff] to-[#000B24] overflow-hidden">
       {/* Pattern Overlay */}
       <Toaster />
-
       <div
         className="fixed inset-0 opacity-5"
         style={{
@@ -113,6 +112,7 @@ export default function Home() {
 
       {/* Content */}
       <div className="relative">
+        <PromoBanner />
         {/* Navigation */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -146,7 +146,10 @@ export default function Home() {
                 variants={item}
                 className="text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight"
               >
-                Remove backgrounds <span className="flex"><TypewriterEffect words={words} /></span>
+                Remove backgrounds
+                <span className="flex">
+                  <TypewriterEffect words={words} />
+                </span>
               </motion.h1>
 
               <motion.p
@@ -186,7 +189,7 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <UploadCard highlight={highlightUpload}/>
+              <UploadCard highlight={highlightUpload} />
             </motion.div>
           </div>
         </main>
