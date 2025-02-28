@@ -72,7 +72,7 @@ export const TypewriterEffect = ({
   return (
     <div
       className={cn(
-        "text-base sm:text-xl md:text-3xl lg:text-5xl font-bold text-center",
+        "text-base sm:text-xl md:text-3xl lg:text-5xl font-bold text-left tracking-[5px]",
         className
       )}
     >
@@ -122,7 +122,7 @@ export const TypewriterEffectSmooth = ({
       <div>
         {wordsArray.map((word, idx) => {
           return (
-            <div key={`word-${idx}`} className="inline-block">
+            <div key={`word-${idx}`} className="inline-block ">
               {word.text.map((char, index) => (
                 <span
                   key={`char-${index}`}
@@ -150,8 +150,8 @@ export const TypewriterEffectSmooth = ({
           width: "fit-content",
         }}
         transition={{
-          duration: 2,
-          ease: "linear",
+          duration: 5,
+          ease: "easeInOut",
           delay: 1,
         }}
       >
