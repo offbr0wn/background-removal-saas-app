@@ -11,6 +11,8 @@ export const SignedInComponent = SignedIn as unknown as React.FC<{
 export const ClerkProviderComponent = ClerkProvider as unknown as React.FC<{
   children: React.ReactNode;
   afterSignOutUrl: string;
+  signInForceRedirectUrl: string;
+  signUpForceRedirectUrl: string;
 }>;
 
 export type RemoveBackgroundProps = {

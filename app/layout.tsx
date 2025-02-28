@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Suspense fallback={<LoadingSpinner />}>
-        <ClerkProviderComponent afterSignOutUrl="/">
+        <ClerkProviderComponent afterSignOutUrl="/" signInForceRedirectUrl="/" signUpForceRedirectUrl="/pricing">
           <body>
             {children}
             <Analytics />
