@@ -98,6 +98,7 @@ export default function PricingPage() {
 
   const handlePlanClick = async (e: any) => {
     const { userId } = await ClerkFetchUser();
+
     if (e.target.name === "Free") {
       if (!userId) {
         router.push("/sign-up");
@@ -109,55 +110,51 @@ export default function PricingPage() {
           variant: "default",
         });
       }
-
-      // await ClerkAddMetaData({
-      //   subscription_type: "Free",
-      //   api_call_count: 0,
-      // });
     }
 
     if (e.target.name === "Pro") {
       setLoading(true);
       if (!userId) {
         router.push("/sign-up");
-      }
-      try {
-        const stripe = await stripePromise;
+      } else {
+        try {
+          const stripe = await stripePromise;
 
-        const lineItems = [
-          {
-            price: "price_1Qx8JZFhXFCC2y3QzA64blqm",
-            quantity: 1,
-          },
-        ];
+          const lineItems = [
+            {
+              price: "price_1Qx8JZFhXFCC2y3QzA64blqm",
+              quantity: 1,
+            },
+          ];
 
-        const { sessionId, sessionError } = await CreateStripeCheckout(
-          lineItems
-        );
+          const { sessionId, sessionError } = await CreateStripeCheckout(
+            lineItems
+          );
 
-        if (!sessionId || sessionError) {
-          toast({
-            title: "Error",
-            description: sessionError,
-            variant: "destructive",
+          if (!sessionId || sessionError) {
+            toast({
+              title: "Error",
+              description: sessionError,
+              variant: "destructive",
+            });
+            throw new Error("Failed to create checkout session");
+          }
+          // Replace this with your logic to handle plan selection
+
+          if (!stripe) {
+            throw new Error("Stripe is not initialized");
+          }
+          const { error } = await stripe.redirectToCheckout({
+            sessionId,
           });
-          throw new Error("Failed to create checkout session");
-        }
-        // Replace this with your logic to handle plan selection
 
-        if (!stripe) {
-          throw new Error("Stripe is not initialized");
+          if (error) {
+            throw new Error("Failed to redirect to checkout");
+          }
+          if (!error) setLoading(false);
+        } catch (error) {
+          console.error("Error creating checkout session:", error);
         }
-        const { error } = await stripe.redirectToCheckout({
-          sessionId,
-        });
-
-        if (error) {
-          throw new Error("Failed to redirect to checkout");
-        }
-        if (!error) setLoading(false);
-      } catch (error) {
-        console.error("Error creating checkout session:", error);
       }
     }
 
