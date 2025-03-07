@@ -6,8 +6,11 @@ import { Suspense } from "react";
 import { LoadingSpinner } from "./components/ui/loading-spinner";
 
 export const metadata: Metadata = {
-  title: "RemoveBG - AI Background Removal",
-  description: "Remove backgrounds from images instantly with AI precision",
+  title: "RB Remove Background - AI Background Removal",
+  description: "Remove backgrounds for images instantly with AI precision",
+  twitter: {
+    card: "summary_large_image",
+  }
 };
 
 export default function RootLayout({
