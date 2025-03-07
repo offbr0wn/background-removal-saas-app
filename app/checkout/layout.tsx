@@ -3,10 +3,10 @@ import { Suspense } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <html lang="en">
+    <html lang="en">
+      <Suspense fallback={<LoadingSpinner />}>
         <body>{children}</body>
-      </html>
-    </Suspense>
+      </Suspense>
+    </html>
   );
 }
