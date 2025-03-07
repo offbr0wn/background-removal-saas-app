@@ -114,7 +114,7 @@ export default function ContactPage() {
                         id="name"
                         {...register("name")}
                         className="bg-white text-gray-900 pl-10 rounded-lg"
-                        placeholder="John Doe"
+                        placeholder="Enter your name"
                       />
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     </div>
@@ -138,7 +138,7 @@ export default function ContactPage() {
                         type="email"
                         {...register("email")}
                         className="bg-white text-gray-900 pl-10 rounded-lg"
-                        placeholder="john@example.com"
+                        placeholder="Enter your email"
                       />
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     </div>
