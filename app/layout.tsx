@@ -20,14 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Suspense fallback={<LoadingSpinner />}>
         <ClerkProviderComponent afterSignOutUrl="/" signInForceRedirectUrl="/" signUpForceRedirectUrl="/pricing">
           <body>
             {children}
             <Analytics />
           </body>
         </ClerkProviderComponent>
-      </Suspense>
     </html>
   );
 }

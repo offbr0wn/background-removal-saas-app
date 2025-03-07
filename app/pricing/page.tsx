@@ -184,134 +184,129 @@ export default function PricingPage() {
     }
   };
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <Layout>
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="text-5xl font-bold text-white mb-4 text-center">
-              Choose Your Plan
-            </h1>
-            <p className="text-xl text-white/70 mb-12 text-center max-w-2xl mx-auto">
-              Select the perfect plan for your needs.
-            </p>
-          </motion.div>
+    <Layout>
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-5xl font-bold text-white mb-4 text-center">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-white/70 mb-12 text-center max-w-2xl mx-auto">
+            Select the perfect plan for your needs.
+          </p>
+        </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 ">
-            {plans.map((plan, index) => (
-              <motion.div
-                key={index}
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                  scale: currentTier === plan?.name ? 1.05 : 0.95,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                  scale: currentTier === plan?.name ? 1.05 : 0.95,
-                }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                  scale: currentTier === plan?.name ? 1.05 : 0.95,
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  opacity: 1,
-                  y: -10,
-                  transition: { duration: 0.2 },
-                }}
-                className=" backdrop-blur-xl rounded-3xl p-8 flex flex-col bg-white/20 "
-                id={plan.name}
-              >
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  {plan.name}
-                </h3>
-                <p className="text-4xl font-bold text-white mb-2">
-                  {plan.price}
-                </p>
-                <p className="text-white/70 mb-6">{plan.description}</p>
-                <ul className="mb-8 flex-grow space-y-4">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li
-                      key={featureIndex}
-                      className="flex items-center text-white"
-                    >
-                      {feature.included ? (
-                        <Check className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
-                      ) : (
-                        <X className="h-5 w-5 text-red-400 mr-2 flex-shrink-0" />
-                      )}
-                      <span className={feature.included ? "" : "text-white/50"}>
-                        {feature.name}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                {/* Plan Selection Button */}
-                {(plan.cta === "Go Pro" && loading && index) === 1 ? (
-                  <LoadingSpinner className="self-center" />
-                ) : (
-                  <Button
-                    className={`w-full mb-4 ${
-                      plan.highlighted
-                        ? "bg-blue-500 hover:bg-blue-600 text-white"
-                        : "bg-white/10 hover:bg-white/20 text-white"
-                    }`}
-                    name={plan.name}
-                    onClick={
-                      currentTier === plan?.name
-                        ? undefined
-                        : (e) => handlePlanClick(e)
-                    }
-                    disabled={currentTier === plan?.name}
+        <div className="grid md:grid-cols-3 gap-8 ">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={index}
+              initial={{
+                opacity: 0,
+                y: 20,
+                scale: currentTier === plan?.name ? 1.05 : 0.95,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: currentTier === plan?.name ? 1.05 : 0.95,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+                scale: currentTier === plan?.name ? 1.05 : 0.95,
+              }}
+              whileHover={{
+                scale: 1.05,
+                opacity: 1,
+                y: -10,
+                transition: { duration: 0.2 },
+              }}
+              className=" backdrop-blur-xl rounded-3xl p-8 flex flex-col bg-white/20 "
+              id={plan.name}
+            >
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {plan.name}
+              </h3>
+              <p className="text-4xl font-bold text-white mb-2">{plan.price}</p>
+              <p className="text-white/70 mb-6">{plan.description}</p>
+              <ul className="mb-8 flex-grow space-y-4">
+                {plan.features.map((feature, featureIndex) => (
+                  <li
+                    key={featureIndex}
+                    className="flex items-center text-white"
                   >
-                    {currentTier === plan?.name ? "Current Tier" : plan.cta}
-                  </Button>
-                )}
-                {/* Cancel Subscription Button */}
-                {currentTier === "Pro" && plan.name === "Pro" && (
-                  <Button
-                    className={`w-full ${
-                      plan.highlighted
-                        ? "bg-red-500 hover:bg-white/20 text-white"
-                        : "bg-red-500/50 hover:bg-white/20 text-white"
-                    }`}
-                    name={plan.name}
-                    onClick={handleCancelSubscription}
-                  >
-                    {currentTier === plan?.name
-                      ? "Cancel Subscription"
-                      : plan.cta}
-                  </Button>
-                )}
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-16 text-center"
-          >
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Not sure which plan is right for you?
-            </h2>
-            <p className="text-white/70 mb-8">
-              Our team is here to help you choose the best option for your
-              needs.
-            </p>
-            <Button size="lg" className="bg-white hover:bg-white/90 text-black">
-              Talk to Sales
-            </Button>
-          </motion.div>
+                    {feature.included ? (
+                      <Check className="h-5 w-5 text-green-400 mr-2 flex-shrink-0" />
+                    ) : (
+                      <X className="h-5 w-5 text-red-400 mr-2 flex-shrink-0" />
+                    )}
+                    <span className={feature.included ? "" : "text-white/50"}>
+                      {feature.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {/* Plan Selection Button */}
+              {(plan.cta === "Go Pro" && loading && index) === 1 ? (
+                <LoadingSpinner className="self-center" />
+              ) : (
+                <Button
+                  className={`w-full mb-4 ${
+                    plan.highlighted
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : "bg-white/10 hover:bg-white/20 text-white"
+                  }`}
+                  name={plan.name}
+                  onClick={
+                    currentTier === plan?.name
+                      ? undefined
+                      : (e) => handlePlanClick(e)
+                  }
+                  disabled={currentTier === plan?.name}
+                >
+                  {currentTier === plan?.name ? "Current Tier" : plan.cta}
+                </Button>
+              )}
+              {/* Cancel Subscription Button */}
+              {currentTier === "Pro" && plan.name === "Pro" && (
+                <Button
+                  className={`w-full ${
+                    plan.highlighted
+                      ? "bg-red-500 hover:bg-white/20 text-white"
+                      : "bg-red-500/50 hover:bg-white/20 text-white"
+                  }`}
+                  name={plan.name}
+                  onClick={handleCancelSubscription}
+                >
+                  {currentTier === plan?.name
+                    ? "Cancel Subscription"
+                    : plan.cta}
+                </Button>
+              )}
+            </motion.div>
+          ))}
         </div>
-      </Layout>
-    </Suspense>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16 text-center"
+        >
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Not sure which plan is right for you?
+          </h2>
+          <p className="text-white/70 mb-8">
+            Our team is here to help you choose the best option for your needs.
+          </p>
+          <Button size="lg" className="bg-white hover:bg-white/90 text-black">
+            Talk to Sales
+          </Button>
+        </motion.div>
+      </div>
+    </Layout>
   );
 }
