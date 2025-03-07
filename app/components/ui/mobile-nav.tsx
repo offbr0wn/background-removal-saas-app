@@ -32,6 +32,10 @@ const menuItems = [
     title: "Examples",
     items: [{ title: "Gallery", href: "/examples" }],
   },
+  {
+    title: "Contact",
+    items: [{ title: "Contact", href: "/contact" }],
+  },
 ];
 
 export function MobileNav({ usersFetched }: any) {

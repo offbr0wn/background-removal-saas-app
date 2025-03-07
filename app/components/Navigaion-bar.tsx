@@ -42,6 +42,10 @@ const navItems = [
     name: "Pricing",
     href: "/pricing",
   },
+  {
+    name: "Contact",
+    href: "/contact",
+  },
 ];
 
 export function NavigationBar() {
