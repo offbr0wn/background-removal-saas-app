@@ -135,7 +135,7 @@ export default function SuccessPage() {
             </div>
             <div className="flex justify-between">
               <span>Amount:</span>
-              <span className="text-white">£10/month</span>
+              <span className="text-white">£2/month</span>
             </div>
           </div>
         </motion.div>
