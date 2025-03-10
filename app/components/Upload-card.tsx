@@ -13,7 +13,8 @@ import { LoadingSpinner } from "./ui/loading-spinner";
 import { useToast } from "@/hooks/use-toast";
 import { ClerkFetchUser } from "@/api/helpers/clerk-fetch-user";
 import { setApiUsageCookie } from "@/api/helpers/cookies-helper";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ImageSelector } from "./image-selector";
 
 export function UploadCard({ highlight }: { highlight: boolean }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -26,6 +27,8 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
   const [urlInput, setUrlInput] = useState<string>("");
   const [assignUrlLink, setAssignUrlLink] = useState<string>("");
   const [loadingButton, setLoadingButton] = useState(false);
+  const [showSampleImages, setShowSampleImages] = useState(false);
+
   const router = useRouter();
 
   // Limit before requiring signup
@@ -105,8 +108,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         toast({
           duration: 2000,
           title: "API limit reached",
-          description:
-            `Please wait for next next month for your usage to reset. or proceed to purchase Pro tier, ${processedImage.error}`,
+          description: `Please wait for next next month for your usage to reset. or proceed to purchase Pro tier, ${processedImage.error}`,
         });
       }
       if (!processedImage.error) {
@@ -172,6 +174,12 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         ease: "easeInOut",
       },
     },
+  };
+
+  const handleImageSelect = (imageUrl: string) => {
+    setPreview(imageUrl);
+    setAssignUrlLink(imageUrl);
+    setShowSampleImages(false);
   };
 
   return (
@@ -319,13 +327,37 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
           </Button>
         )}
 
+        <AnimatePresence>
+          {showSampleImages && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden mt-4"
+            >
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-0 right-0 text-white/70 hover:text-white z-10"
+                  onClick={() => setShowSampleImages(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+                <ImageSelector onImageSelect={handleImageSelect} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Quick Actions  for later features down the line */}
         <div className="mt-6 grid grid-cols-1 gap-4">
           <Button
             variant="ghost"
-            className="text-white/70 hover:text-white hover:bg-white/10 "
+            className="text-white/80 hover:text-white hover:bg-white/10 "
+            onClick={() => setShowSampleImages(!showSampleImages)}
           >
-            Sample images
+            {showSampleImages ? "Hide sample images" : "Try our sample images ?"}
           </Button>
           {/* <Button
             variant="ghost"
