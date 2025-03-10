@@ -56,12 +56,12 @@ type ImageSelectorProps = {
 
 export function ImageSelector({ onImageSelect }: ImageSelectorProps) {
   const client = createClient(process.env.NEXT_PUBLIC_PEXELS_API_KEY as string);
-  const [filteredImages, setFilteredImages] = useState<FilteredImage[]>([]);
   const [sampleImages, setSampleImages] = useState<Collection[]>([]);
+  const [filteredImages, setFilteredImages] = useState<FilteredImage[]>([]);
 
   useEffect(() => {
     client.collections
-      .featured({ per_page: 4, type: "photos" })
+      .featured({ per_page: 4, type: "photos", page: Math.floor(Math.random() * 50) + 1 })
       // @ts-ignore
       .then(({ collections }) => {
         setSampleImages(collections);
@@ -81,15 +81,8 @@ export function ImageSelector({ onImageSelect }: ImageSelectorProps) {
       .catch((error) => {
         console.log(error);
       });
-
-    // const filtered = mockImages.filter(
-    //   (image) =>
-    //     image.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    //     image.alt.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-    //   console.log(filtered);
   }, []);
-  console.log(filteredImages);
+
   return (
     <div className="space-y-4">
       <div className="text-white">
@@ -108,17 +101,13 @@ export function ImageSelector({ onImageSelect }: ImageSelectorProps) {
             whileTap={{ scale: 0.95 }}
             className="relative group overflow-hidden rounded-lg aspect-square cursor-pointer"
             onClick={() => {
-              //   setSearchQuery(category?.title || "");
               searchImages(category.id);
             }}
           >
-            {/* <img
-              src={`/placeholder.svg?height=150&width=150&text=${category?.title}`}
-              alt={category}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            /> */}
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center p-2">
-              <span className="text-white font-medium">{category.title}</span>
+              <span className="text-white font-bold md:text-lg text-[50%]">
+                {category.title}
+              </span>
             </div>
           </motion.button>
         ))}

@@ -354,7 +354,7 @@ export function UploadCard({ highlight }: { highlight: boolean }) {
         <div className="mt-6 grid grid-cols-1 gap-4">
           <Button
             variant="ghost"
-            className="text-white/80 hover:text-white hover:bg-white/10 "
+            className="text-white/80 bg-white/10 hover:text-white hover:bg-red-500/50 "
             onClick={() => setShowSampleImages(!showSampleImages)}
           >
             {showSampleImages ? "Hide sample images" : "Try our sample images ?"}
