@@ -25,7 +25,7 @@ function Page({ params }: { params: { slug: number } }) {
         });
         clearInterval(intervalId); // Stop polling once we have a valid image URL
       }
-    }, 2000);
+    }, 500);
 
     // Clean up the interval on component unmount or when params.slug changes
     return () => clearInterval(intervalId);
