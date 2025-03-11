@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { ClerkProviderComponent } from "./middleware/clerk-component-type";
-import { Suspense } from "react";
-import { LoadingSpinner } from "./components/ui/loading-spinner";
-import AdSense from "./components/AdSense";
 
 export const metadata: Metadata = {
   title: "RB Remove Background - AI Background Removal",
@@ -22,7 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <AdSense />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3025338220182456"
+        />
       </head>
       <ClerkProviderComponent
         afterSignOutUrl="/"
