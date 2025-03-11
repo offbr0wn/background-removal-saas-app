@@ -111,13 +111,13 @@ export function MobileNav({ usersFetched }: any) {
                       <SignInButton>
                         <Button
                           variant="outline"
-                          className="w-full text-white border-white/20 hover:bg-white/10 dark"
+                          className="w-full text-black border-white/20 hover:bg-white/50 font-bold text-md "
                         >
                           <Link href="/login">Log in</Link>
                         </Button>
                       </SignInButton>
                       <SignUpButton>
-                        <Button className="w-full bg-white hover:bg-white/90 text-black">
+                        <Button className="w-full bg-lime-500 hover:bg-lime-700 text-white font-bold text-md">
                           <Link href="/signup">Sign up</Link>
                         </Button>
                       </SignUpButton>
