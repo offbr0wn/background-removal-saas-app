@@ -4,13 +4,14 @@ import { Analytics } from "@vercel/analytics/next";
 import { ClerkProviderComponent } from "./middleware/clerk-component-type";
 import { Suspense } from "react";
 import { LoadingSpinner } from "./components/ui/loading-spinner";
+import AdSense from "./components/AdSense";
 
 export const metadata: Metadata = {
   title: "RB Remove Background - AI Background Removal",
   description: "Remove backgrounds for images instantly with AI precision",
   twitter: {
     card: "summary_large_image",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -20,12 +21,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <ClerkProviderComponent afterSignOutUrl="/" signInForceRedirectUrl="/" signUpForceRedirectUrl="/pricing">
-          <body>
-            {children}
-            <Analytics />
-          </body>
-        </ClerkProviderComponent>
+      <head>
+        <AdSense pId="pub-3025338220182456" />
+      </head>
+      <ClerkProviderComponent
+        afterSignOutUrl="/"
+        signInForceRedirectUrl="/"
+        signUpForceRedirectUrl="/pricing"
+      >
+        <body>
+          {children}
+          <Analytics />
+        </body>
+      </ClerkProviderComponent>
     </html>
   );
 }
