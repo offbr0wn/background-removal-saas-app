@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <AdSense pId="pub-3025338220182456" />
+        <AdSense />
       </head>
       <ClerkProviderComponent
         afterSignOutUrl="/"
