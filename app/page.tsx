@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FeatureHighlights } from "@/components/feature-highlights"; // Corrected import path
+import { FeatureHighlights } from "@/components/ui/feature-highlights"; // Corrected import path
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner"; // Corrected import path
 import { NavigationBar } from "@/components/Navigaion-bar";
