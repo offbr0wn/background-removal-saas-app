@@ -88,13 +88,13 @@ export function NavigationBar() {
           </h2>
           <SignedOutComponent>
             <SignInButton>
-              <Button variant="ghost" className="text-white " asChild>
+              <Button variant="ghost" className="text-white font-semibold text-md" asChild>
                 <Link href="/login">Log in</Link>
               </Button>
             </SignInButton>
             <SignUpButton>
               <Button
-                className="bg-blue-700 hover:bg-blue-700 text-white"
+                className="bg-lime-500 hover:bg-lime-700 text-white font-semibold text-md"
                 asChild
               >
                 <Link href="/signup">Sign up</Link>
