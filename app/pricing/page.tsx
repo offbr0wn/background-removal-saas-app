@@ -16,10 +16,7 @@ import {
 import { motion } from "framer-motion";
 import { useClerk } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import {
-  ClerkAddMetaData,
-  ClerkFetchUser,
-} from "@/api/helpers/clerk-fetch-user";
+import { ClerkFetchUser } from "@/api/helpers/clerk-fetch-user";
 import {
   cancelStripeSubscription,
   CreateStripeCheckout,
@@ -35,8 +32,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { PricingCardComponent } from "@/components/ui/pricing-tier-card";
-import { ConstPlans } from "@/lib/const-data";
+import { ConstPlans, faqs } from "@/lib/const-data";
 import Link from "next/link";
+import ProgressUserBar from "@/components/progress-user-bar";
 
 export default function PricingPage() {
   const { session } = useClerk();
@@ -67,90 +65,6 @@ export default function PricingPage() {
     }
     fetchTier();
   }, []);
-
-  const plans = [
-    {
-      name: "Free",
-      price: "£0",
-      description: "Perfect for individuals and small projects",
-      features: [
-        { name: "20 images/month", included: true },
-        { name: "Basic support", included: true },
-        { name: "50% of input resolution", included: true },
-        { name: "Standard processing speed", included: true },
-        { name: "4K max resolution", included: false },
-        { name: "Compression of images", included: true },
-        // { name: "API access", included: false },
-        // { name: "Batch processing", included: false },
-      ],
-      cta: "Start Basic",
-      // highlighted: true,
-    },
-    {
-      name: "Pro",
-      price: "£2 / month",
-      description: "Ideal for professionals and growing businesses",
-      features: [
-        { name: "200 images/month", included: true },
-        { name: "Priority support", included: true },
-        { name: "Original output resolution", included: true },
-        { name: "Faster processing speed", included: true },
-        { name: "4K max resolution", included: true },
-        { name: "Compression of images", included: false },
-        { name: "Setting Background Color", included: false },
-        // { name: "API access", included: true },
-        // { name: "Batch processing", included: true },
-      ],
-      cta: "Go Pro",
-      highlighted: true,
-    },
-    {
-      name: "Expert",
-      price: "Custom",
-      description: "Tailored solutions for large-scale operations",
-      features: [
-        { name: "Unlimited images", included: true },
-        { name: "24/7 dedicated support", included: true },
-        { name: "8K max resolution", included: true },
-        { name: "Fastest processing speed", included: true },
-        { name: "Setting Background Color", included: true },
-      ],
-      cta: "Coming Soon",
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "What's the difference between Free and Pro plans?",
-      answer:
-        "The Basic plan is free and offers 20 images per month at 50% output resolution. The Pro plan gives you 200 images per month at 100% of output resolution. Pro users also get priority support and 2x faster processing speed.",
-    },
-    {
-      question: "Can I upgrade from Free to Pro later?",
-      answer:
-        "You can upgrade from Basic to Pro at any time. Your account will be instantly upgraded with all Pro features as soon as your payment is processed.",
-    },
-    {
-      question: "Is the Free plan free forever?",
-      answer:
-        "Yes, the Free plan is free forever. You can always upgrade to Pro, and you can always downgrade to Free if you change your mind.",
-    },
-    {
-      question: "How does the image limit work?",
-      answer:
-        "The image limit resets every month on your billing date . Unused images don't roll over to the next month and usage is reset. Pro users get 200 images per month, which is perfect for most professional needs.",
-    },
-    {
-      question: "Can I cancel my subscription at any time?",
-      answer:
-        "Yes, you can cancel your subscription at any time. You can do so by clicking the 'Cancel Subscription' button on your pricing page. You can continue using the service until the end of your current billing period.",
-    },
-    {
-      question: "What happens if I don't renew my Pro subscription ?",
-      answer:
-        "If you don't renew your subscription, your account will  continue to function until the end of your current billing period. After that, you will be downgraded to the Free plan.",
-    },
-  ];
 
   const handlePlanClick = async (plan: string) => {
     const { userId } = await ClerkFetchUser();
@@ -186,7 +100,7 @@ export default function PricingPage() {
 
           const lineItems = [
             {
-              price: "price_1Qx8JZFhXFCC2y3QzA64blqm",
+              price: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID as string,
 
               quantity: 1,
             },
@@ -259,7 +173,7 @@ export default function PricingPage() {
         >
           <h1 className="text-3xl md:text-3xl font-bold text-white mb-3 tracking-tight">
             Choose the Perfect Plan for Your{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-600">
               Image Editing
             </span>{" "}
             Needs
@@ -268,7 +182,8 @@ export default function PricingPage() {
             Select the perfect plan for your needs.
           </p>
         </motion.div>
-
+        {/* Progress User Bar */}
+        <ProgressUserBar />
         {/* Tier Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-8 lg:gap-8 mb-12 relative">
           {ConstPlans.map((plan, index) => (
@@ -415,7 +330,7 @@ export default function PricingPage() {
                   <th className="p-4 bg-gray-800/50 ">
                     <div className="text-center">
                       <span className="text-white font-medium">Free</span>
-                      <div className="text-white/50 text-xs mt-1">£0/month</div>
+                      <div className="text-white/50 text-xs mt-1">$0/month</div>
                     </div>
                   </th>
                   <th className="p-4 bg-gradient-to-b from-purple-900/50 to-blue-900/50 border-t-2 border-x-2 border-purple-500/30  ">
@@ -424,7 +339,7 @@ export default function PricingPage() {
                         RECOMMENDED
                       </Badge>
                       <span className="text-white font-medium">Pro</span>
-                      <div className="text-white/50 text-xs mt-1">£2/month</div>
+                      <div className="text-white/50 text-xs mt-1">$2/month</div>
                     </div>
                   </th>
                   <th className="p-4 bg-gray-800/50 rounded-tr-xl ">
@@ -593,7 +508,7 @@ export default function PricingPage() {
             <p className="text-white/80 max-w-xl mb-6 text-sm">
               Join thousands of professionals who trust our Pro plan for their
               background removal needs. Upgrade today and experience the
-              difference with our limited offer of £2 / month.
+              difference with our limited offer of $2 / month.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button

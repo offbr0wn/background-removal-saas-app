@@ -1,11 +1,9 @@
-import { ImageIcon, Crown, Users } from "lucide-react";
-import { useState } from "react";
 const getPrice = (monthlyPrice: number) => {
   return {
     value: monthlyPrice,
     monthly: monthlyPrice,
     annual: monthlyPrice * 12,
-    display: `£${monthlyPrice}`,
+    display: `$${monthlyPrice}`,
     perMonth: null,
     perYear: null,
     savings: null,
@@ -156,5 +154,38 @@ export const ConstPlans = [
     color: "teal",
     limitedOffer: false,
     bestFor: "Teams",
+  },
+];
+
+export const faqs = [
+  {
+    question: "What's the difference between Free and Pro plans?",
+    answer:
+      "The Basic plan is free and offers 20 images per month at 50% output resolution. The Pro plan gives you 200 images per month at 100% of output resolution. Pro users also get priority support and 2x faster processing speed.",
+  },
+  {
+    question: "Can I upgrade from Free to Pro later?",
+    answer:
+      "You can upgrade from Basic to Pro at any time. Your account will be instantly upgraded with all Pro features as soon as your payment is processed.",
+  },
+  {
+    question: "Is the Free plan free forever?",
+    answer:
+      "Yes, the Free plan is free forever. You can always upgrade to Pro, and you can always downgrade to Free if you change your mind.",
+  },
+  {
+    question: "How does the image limit work?",
+    answer:
+      "The image limit resets every month on your billing date . Unused images don't roll over to the next month and usage is reset. Pro users get 200 images per month, which is perfect for most professional needs.",
+  },
+  {
+    question: "Can I cancel my subscription at any time?",
+    answer:
+      "Yes, you can cancel your subscription at any time. You can do so by clicking the 'Cancel Subscription' button on your pricing page. You can continue using the service until the end of your current billing period.",
+  },
+  {
+    question: "What happens if I don't renew my Pro subscription ?",
+    answer:
+      "If you don't renew your subscription, your account will  continue to function until the end of your current billing period. After that, you will be downgraded to the Free plan.",
   },
 ];

@@ -40,3 +40,15 @@ export async function ClerkAddMetaData(props?: any) {
     return error;
   }
 }
+
+export async function GetClerkUsers() {
+  try {
+    const client = await clerkClient();
+
+    const { totalCount } = await client.users.getUserList();
+
+    return totalCount;
+  } catch (error) {
+    return error;
+  }
+}
