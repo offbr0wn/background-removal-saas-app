@@ -27,7 +27,7 @@ export function PromoBanner() {
                 <span className="hidden md:inline  bg-white/20 hover:bg-white/20 border-white/10 text-white text-sm font-bold py-2 px-4 rounded-full ">
                   Limited Time Offer:
                 </span>{" "}
-                First 100 users get Pro tier for just $4/month lifetime!
+                First 100 users get Pro tier for just $2/month lifetime!
               </p>
             </div>
             <div className="flex items-center space-x-5">
