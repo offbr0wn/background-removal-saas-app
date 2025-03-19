@@ -152,8 +152,7 @@ export default function PricingPage() {
     },
   ];
 
-  const handlePlanClick = async (plan: any) => {
-    console.log(plan);
+  const handlePlanClick = async (plan: string) => {
     const { userId } = await ClerkFetchUser();
 
     if (plan === "Free") {
