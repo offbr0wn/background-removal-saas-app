@@ -5,7 +5,7 @@ import {
 } from "@/api/helpers/clerk-fetch-user";
 import { RemoveBackgroundProps } from "@/middleware/clerk-component-type";
 import { resetUsageIfNeeded } from "../utils/subscriptionUtils";
-import { permanentRedirect } from "next/navigation";
+
 
 export const handleBackgroundRemoval = async ({
   preview,
@@ -113,6 +113,10 @@ export const getBackgroundRemovalImage = async (slug: number) => {
     return {
       status: data?.data?.status,
       result: data?.data?.result?.output_object?.tmp_url,
+      format: data?.data?.result?.output_object?.format,
+      size: { width: data?.data?.result?.output_object?.width, height: data?.data?.result?.output_object?.height, size: data?.data?.result?.output_object?.size },
+      input_image_url: data?.data?.request.input,
+      mps: data?.data.result?.output_object?.mps
     };
   } catch (error) {
     console.error("Error fetching image:", error);
