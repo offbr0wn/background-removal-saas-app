@@ -11,21 +11,32 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { toast } from "@/hooks/use-toast";
 
 function Page({ params }: { params: { slug: number } }) {
-  const [backgroundRemovalLink, setBackgroundRemovalLink] = useState(null);
+  const [backgroundRemovalLink, setBackgroundRemovalLink] = useState<{
+    format: string;
+    input_image_url: string;
+    result: string;
+    size: {
+      height: number;
+      width: number;
+    };
+    status: string;
+    mps: number;
+  } | null>(null);
 
   useEffect(() => {
     // Poll the API every 2 seconds
     const intervalId = setInterval(async () => {
       const processedImage = await getBackgroundRemovalImage(params.slug);
+
       if (processedImage?.status === "DONE") {
-        setBackgroundRemovalLink(processedImage?.result);
+        setBackgroundRemovalLink(processedImage);
         toast({
           duration: 2000,
           description: "Background removed successfully",
         });
         clearInterval(intervalId); // Stop polling once we have a valid image URL
       }
-    }, 500);
+    }, 400);
 
     // Clean up the interval on component unmount or when params.slug changes
     return () => clearInterval(intervalId);
@@ -49,22 +60,22 @@ function Page({ params }: { params: { slug: number } }) {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 py-12 pt-8">
+        <main className="max-w-7xl mx-auto px-6  pt-4 ">
           <Link href="/">
             <Button
               variant="ghost"
-              className="mb-5 text-white hover:text-white/80"
+              className="pb-1 text-white hover:text-white/80 hover:bg-white/10 font-bold"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Button>
           </Link>
 
-          <div className="flex flex-col  gap-2 justify-center items-center w-auto pt-10">
+          <div className="flex flex-col  gap-2 justify-center items-center  pb-20 ">
             {/* <h1 className="text-4xl font-bold text-white mb-8">
               Remove Image Background
             </h1> */}
-            <div>
+            <div className="w-full">
               {backgroundRemovalLink ? (
                 <ProcessedImage processedImage={backgroundRemovalLink} />
               ) : (
