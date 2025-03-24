@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { ClerkProviderComponent } from "./middleware/clerk-component-type";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: "RB Remove Background - AI Background Removal",
@@ -34,6 +35,7 @@ export default function RootLayout({
         <body>
           {children}
           <Analytics />
+          <GoogleAnalytics gaId="G-HR2W4KCWCG" />
         </body>
       </ClerkProviderComponent>
     </html>
