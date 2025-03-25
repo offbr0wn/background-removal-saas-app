@@ -273,7 +273,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
               <h3 className="text-lg  text-black font-bold ">Share</h3>
 
               <div className="space-y-2">
-                <Popover>
+                {/* <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
@@ -323,7 +323,7 @@ export function ProcessedImage({ processedImage }: ProcessedImageProps) {
                       </Button>
                     </div>
                   </PopoverContent>
-                </Popover>
+                </Popover> */}
 
                 <Button
                   variant="outline"
